@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -13,13 +14,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transaction {
-    
+
     //to fix JSON key
     @JsonProperty("transactionId")
-    private String transactionId;
+    private Long transactionId;
 
     @JsonProperty("userId")
-    private String userId;
+    private Long userId;
 
     @JsonProperty("amount")
     private BigDecimal amount;
@@ -27,9 +28,9 @@ public class Transaction {
     @JsonProperty("currency")
     private String currency;
 
-    @JsonProperty ("merchantId")
-    private String merchantId;
+    @JsonProperty("merchantId")
+    private Long merchantId;
 
-    @JsonProperty ("createdAt")
+    @JsonProperty("createdAt")
     private LocalDateTime createdAt;
 }
