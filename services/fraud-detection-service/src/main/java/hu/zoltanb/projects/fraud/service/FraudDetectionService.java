@@ -16,24 +16,26 @@ public class FraudDetectionService {
     private final StringRedisTemplate redisTemplate;
 
     public FraudCheckResult check(Transaction tx){
+
+        //Card testing
+        if (tx.getAmount().compareTo(new BigDecimal(2000)) < 0) {
+            String cKey = "card_test: " + tx.getUserId();
+            Long cCount = redisTemplate.opsForValue().increment(cKey);
+            if (cCount != null && cCount == 1) redisTemplate.expire(cKey, Duration.ofMinutes(10));
+
+            if (cCount != null && cCount > 2) {
+                return new FraudCheckResult(true, "CARD_TESTING");
+            }
+        }
         //Velocity test
         String vKey = "velocity: " + tx.getUserId();
         Long vCount = redisTemplate.opsForValue().increment(vKey);
         if (vCount != null && vCount == 1) redisTemplate.expire(vKey, Duration.ofMinutes(1));
 
-        if (vCount != null && vCount > 5) {
+        if (vCount != null && vCount > 10) {
             return new FraudCheckResult(true,"VELOCITY");
         }
-        //Card testing
-        if (tx.getAmount().compareTo(new BigDecimal(200)) < 0) {
-            String cKey = "card_test: " + tx.getUserId();
-            Long cCount = redisTemplate.opsForValue().increment(cKey);
-            if (cCount != null && cCount == 1) redisTemplate.expire(cKey, Duration.ofMinutes(10));
 
-            if (cCount != null && cCount > 3) {
-                return new FraudCheckResult(true, "CARD_TESTING");
-            }
-        }
 
         return new FraudCheckResult(false, null);
 

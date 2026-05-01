@@ -22,9 +22,9 @@ public class TransactionGeneratorService {
     }
 
     public void generateData(int count) throws InterruptedException {
-        //max. number of user is 1000
+        //max. number of user is 10
         long minUserId = 100;
-        long maxUserId = 1100;
+        long maxUserId = 110;
 
         for (int i = 0; i < count; i++) {
             //Because ThreadLocalrandom exlusive upper bound
@@ -34,7 +34,7 @@ public class TransactionGeneratorService {
                     .transactionId(txIdCounter.getAndIncrement())   //UNIQUE!
                     .userId(randomUserId)                           //REPEATING
                     .amount(new BigDecimal(ThreadLocalRandom.current()
-                            .nextDouble(500, 50000))
+                            .nextDouble(50, 10001))
                             .setScale(2, RoundingMode.HALF_UP))
                     .currency("HUF")
                     .createdAt(LocalDateTime.now())

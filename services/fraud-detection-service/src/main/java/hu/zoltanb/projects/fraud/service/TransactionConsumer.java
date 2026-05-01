@@ -19,7 +19,9 @@ public class TransactionConsumer {
     private final FraudDetectionService fraudService;
     private final KafkaTemplate<String, Transaction> kafkaTemplate;
 
-    @KafkaListener(topics = "transactions", groupId = "fraud-detection-clean-start")
+    @KafkaListener(topics = "transactions",
+            //Auto-cleanup for Kafka
+            groupId = "fraud-group-#{T(java.util.UUID).randomUUID().toString()}")
     public void consume(Transaction message) {
         log.info("===> KAFKA MESSAGE ARRIVED: {}", message.getTransactionId());
 
@@ -49,10 +51,10 @@ public class TransactionConsumer {
         }
 
 
-        if (message.getAmount().compareTo(new java.math.BigDecimal("30000")) > 0) {
+        /*if (message.getAmount().compareTo(new java.math.BigDecimal("30000")) > 0) {
             log.warn("!!!Possible fraud transaction!!! Transaction ID:{}, User {}",
                     message.getTransactionId(), message.getUserId());
-        }
+        }*/
     }
 }
 
