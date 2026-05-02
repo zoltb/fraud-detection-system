@@ -4,6 +4,7 @@ import hu.zoltanb.projects.fraud.model.FraudCheckResult;
 import hu.zoltanb.projects.fraud.model.Transaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.time.Duration;
 public class FraudDetectionService {
 
     private final StringRedisTemplate redisTemplate;
+    private final FraudReportingHelper fraudReportingHelper;
 
     public FraudCheckResult check(Transaction tx){
 
@@ -36,9 +38,7 @@ public class FraudDetectionService {
             return new FraudCheckResult(true,"VELOCITY");
         }
 
-
         return new FraudCheckResult(false, null);
-
     }
 
 

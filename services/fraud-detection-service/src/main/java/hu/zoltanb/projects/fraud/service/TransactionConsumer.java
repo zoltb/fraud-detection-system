@@ -33,7 +33,6 @@ public class TransactionConsumer {
                         .transactionId(message.getTransactionId())
                         .userId(message.getUserId())
                         .amount(message.getAmount())
-                        .currency(message.getCurrency())
                         .merchantId(message.getMerchantId())
                         .createdAt(message.getCreatedAt())
                         .fraud(result.isFraud())
@@ -56,6 +55,7 @@ public class TransactionConsumer {
                     message.getTransactionId(), message.getUserId());
         }*/
     }
+
 }
 
 

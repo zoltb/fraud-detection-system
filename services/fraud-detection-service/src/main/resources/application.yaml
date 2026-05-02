@@ -14,10 +14,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
 
   # 3. Redis setup
   data:
@@ -28,6 +29,10 @@ spring:
   # 4. Kafka setup (using 29092 as outsider port)
   kafka:
     bootstrap-servers: localhost:29092
+
+    listener:
+      # 10000ms = After 10 sec sends Idle event
+      idle-event-interval: 10000
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer

@@ -23,7 +23,6 @@ public class TransactionEntity {
     private Long transactionId;
     private Long userId;
     private BigDecimal amount;
-    private String currency;
     private Long merchantId;
     private LocalDateTime createdAt;
 

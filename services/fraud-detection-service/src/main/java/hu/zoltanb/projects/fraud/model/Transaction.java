@@ -25,9 +25,6 @@ public class Transaction {
     @JsonProperty("amount")
     private BigDecimal amount;
 
-    @JsonProperty("currency")
-    private String currency;
-
     @JsonProperty("merchantId")
     private Long merchantId;
 
