@@ -1,5 +1,6 @@
 package hu.zoltanb.projects.fraud.transactiongenerator;
 
+import hu.zoltanb.projects.fraud.config.FraudAppConfig;
 import hu.zoltanb.projects.fraud.model.Transaction;
 import hu.zoltanb.projects.fraud.service.TransactionProducer;
 import org.springframework.stereotype.Service;
@@ -14,21 +15,23 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TransactionGeneratorService {
 
     private final TransactionProducer producer;
+    private final FraudAppConfig config;
     //Transaction ID need to be incremental and unique
     private final AtomicLong txIdCounter = new AtomicLong(1);
 
-    public TransactionGeneratorService(TransactionProducer producer) {
+    public TransactionGeneratorService(TransactionProducer producer, FraudAppConfig config) {
         this.producer = producer;
+        this.config = config;
     }
 
     public void generateData(int count) throws InterruptedException {
+        var gen = config.getGenerator();
         //max. number of user is 20
-        long minUserId = 100;
-        long maxUserId = 199;
+        long minUserId = gen.getMinUserId();
+        long maxUserId = gen.getMaxUserId();
 
-        long minMerchantId = 100;
-        long maxMerchantId = 110;
-
+        long minMerchantId = gen.getMinMerchantId();
+        long maxMerchantId = gen.getMaxMerchantId();
 
         for (int i = 0; i < count; i++) {
             //Because ThreadLocalrandom exlusive upper bound
@@ -39,14 +42,14 @@ public class TransactionGeneratorService {
                     .transactionId(txIdCounter.getAndIncrement())   //UNIQUE!
                     .userId(randomUserId)                           //REPEATING
                     .amount(new BigDecimal(ThreadLocalRandom.current()
-                            .nextDouble(50, 10001))
+                            .nextDouble(gen.getMinAmount(), gen.getMaxAmount()))
                             .setScale(2, RoundingMode.HALF_UP))
                     .merchantId(randomMerchantId)
                     .createdAt(LocalDateTime.now())
                     .build();
 
             producer.sendTestTransaction(tx);
-            Thread.sleep(10);
+            Thread.sleep(gen.getSleepMs());
         }
     }
 }

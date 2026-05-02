@@ -19,33 +19,30 @@ public class FraudReportingHelper {
     private final JdbcTemplate jdbcTemplate;
 
 
-
-
-
     private final AtomicBoolean reportGenerated = new AtomicBoolean(false);
 
     // Value from 21th line is 'false', after event it will be 'true'
     @EventListener
-    public void handleIdleEvent(ListenerContainerIdleEvent event){
+    public void handleIdleEvent(ListenerContainerIdleEvent event) {
         if (reportGenerated.compareAndSet(false, true)) {
-        log.info("No messages received for 10 seconds. Generating summary...");
-        LogFinalStatsics();
-    }
+            log.info("No messages received for 10 seconds. Generating summary...");
+            LogFinalStatsics();
+        }
     }
 
     // When every time we stop the whole process to hae result -> @PreDestroy
     public void LogFinalStatsics() {
         String sql = """
-                SELECT
-                CASE WHEN max_fraud IS NULL THEN 'CLEAN TRANSACTIONS' ELSE max_fraud END as label,
-                COUNT(*) as users
-            FROM (
-                SELECT user_id, MAX(fraud_type) as max_fraud
-                FROM transactions
-                GROUP BY user_id
-            ) user_summary
-            GROUP BY label;
-            """;
+                    SELECT
+                    CASE WHEN max_fraud IS NULL THEN 'CLEAN TRANSACTIONS' ELSE max_fraud END as label,
+                    COUNT(*) as users
+                FROM (
+                    SELECT user_id, MAX(fraud_type) as max_fraud
+                    FROM transactions
+                    GROUP BY user_id
+                ) user_summary
+                GROUP BY label;
+                """;
 
         log.info("--------------------------------------------");
         log.info("FINAL FRAUD STATISTICS (BY AFFECTED USERS)");
@@ -60,5 +57,5 @@ public class FraudReportingHelper {
             log.info("{}: {} user(s)", label, users);
         });
         log.info("-----------------------------------");
-        }
+    }
 }

@@ -46,3 +46,21 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
         spring.json.value.default.type: "hu.zoltanb.projects.fraud.model.Transaction"
+
+fraud:
+  detection:
+    card-test:
+      amount-limit: 2000
+      count-limit: 3
+      duration-minutes: 10
+    velocity:
+      count-limit: 10
+      duration-minutes: 1
+  generator:
+    min-user-id: 100
+    max-user-id: 199
+    min-merchant-id: 100
+    max-merchant-id: 110
+    min-amount: 50
+    max-amount: 10001
+    sleep-ms: 10

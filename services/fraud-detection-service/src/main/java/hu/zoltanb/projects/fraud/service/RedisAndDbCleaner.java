@@ -24,7 +24,7 @@ public class RedisAndDbCleaner {
         jdbcTemplate.execute("TRUNCATE TABLE transactions RESTART IDENTITY CASCADE");
         log.info("PostgreSQL table is empty and IDs are reset!");
 
-        try{
+        try {
             log.info("===> CLEANUP DONE. Waiting 10 seconds for visual check...");
             Thread.sleep(10000);
             log.info("===> Resume processing...");

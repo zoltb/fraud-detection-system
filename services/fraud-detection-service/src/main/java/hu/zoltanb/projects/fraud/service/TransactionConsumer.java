@@ -30,21 +30,21 @@ public class TransactionConsumer {
 
         //Create entity
         TransactionEntity entity = TransactionEntity.builder()
-                        .transactionId(message.getTransactionId())
-                        .userId(message.getUserId())
-                        .amount(message.getAmount())
-                        .merchantId(message.getMerchantId())
-                        .createdAt(message.getCreatedAt())
-                        .fraud(result.isFraud())
-                        .fraudType(result.fraudType())
-                        .build();
+                .transactionId(message.getTransactionId())
+                .userId(message.getUserId())
+                .amount(message.getAmount())
+                .merchantId(message.getMerchantId())
+                .createdAt(message.getCreatedAt())
+                .fraud(result.isFraud())
+                .fraudType(result.fraudType())
+                .build();
 
         // save into PostgreSQL
         repository.save(entity);
         log.info("Transaction saved. Fraud status: {}", result.isFraud());
 
         //notify if it is fraud
-        if (result.isFraud()){
+        if (result.isFraud()) {
             log.warn("!!!Possible fraud transaction!!! ID:{}, Amount: {} ",
                     message.getTransactionId(), message.getAmount());
         }
