@@ -25,7 +25,7 @@ public class FraudDetectionService {
             Long cCount = redisTemplate.opsForValue().increment(cKey);
             if (cCount != null && cCount == 1) redisTemplate.expire(cKey, Duration.ofMinutes(10));
 
-            if (cCount != null && cCount > 2) {
+            if (cCount != null && cCount > 3) {
                 return new FraudCheckResult(true, "CARD_TESTING");
             }
         }

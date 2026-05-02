@@ -36,9 +36,15 @@ public class FraudReportingHelper {
     // When every time we stop the whole process to hae result -> @PreDestroy
     public void LogFinalStatsics() {
         String sql = """
-                SELECT fraud_type, COUNT(DISTINCT user_id) as affected_users
-            FROM transactions
-            GROUP BY fraud_type
+                SELECT
+                CASE WHEN max_fraud IS NULL THEN 'CLEAN TRANSACTIONS' ELSE max_fraud END as label,
+                COUNT(*) as users
+            FROM (
+                SELECT user_id, MAX(fraud_type) as max_fraud
+                FROM transactions
+                GROUP BY user_id
+            ) user_summary
+            GROUP BY label;
             """;
 
         log.info("--------------------------------------------");
@@ -46,8 +52,8 @@ public class FraudReportingHelper {
         log.info("--------------------------------------------");
 
         jdbcTemplate.query(sql, (rs) -> {
-            String type = rs.getString("fraud_type");
-            int users = rs.getInt("affected_users");
+            String type = rs.getString("label");
+            int users = rs.getInt("users");
 
             // Ha a fraud_type null, akkor az egy tiszta (Clean) tranzakció volt
             String label = (type == null) ? "CLEAN TRANSACTIONS" : type;
