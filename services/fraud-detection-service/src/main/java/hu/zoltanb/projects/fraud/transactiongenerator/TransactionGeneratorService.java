@@ -3,7 +3,9 @@ package hu.zoltanb.projects.fraud.transactiongenerator;
 import hu.zoltanb.projects.fraud.config.FraudAppConfig;
 import hu.zoltanb.projects.fraud.model.Transaction;
 import hu.zoltanb.projects.fraud.service.TransactionProducer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,43 +14,41 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionGeneratorService {
 
     private final TransactionProducer producer;
+    private final RestClient restClient;
     private final FraudAppConfig config;
     //Transaction ID need to be incremental and unique
     private final AtomicLong txIdCounter = new AtomicLong(1);
 
-    public TransactionGeneratorService(TransactionProducer producer, FraudAppConfig config) {
-        this.producer = producer;
-        this.config = config;
-    }
-
     public void generateData(int count) throws InterruptedException {
         var gen = config.getGenerator();
-        //max. number of user is 20
-        long minUserId = gen.getMinUserId();
-        long maxUserId = gen.getMaxUserId();
-
-        long minMerchantId = gen.getMinMerchantId();
-        long maxMerchantId = gen.getMaxMerchantId();
 
         for (int i = 0; i < count; i++) {
-            //Because ThreadLocalrandom exlusive upper bound
-            long randomUserId = ThreadLocalRandom.current().nextLong(minUserId, maxUserId + 1);
-            long randomMerchantId = ThreadLocalRandom.current().nextLong(minMerchantId, maxMerchantId + 1);
+            try {
+                // GET API
+                Transaction apiTx = restClient.get()
+                        .uri("http://localhost:8080/api/mock/transactions")
+                        .retrieve()
+                        .body(Transaction.class);
 
-            Transaction tx = Transaction.builder()
-                    .transactionId(txIdCounter.getAndIncrement())   //UNIQUE!
-                    .userId(randomUserId)                           //REPEATING
-                    .amount(new BigDecimal(ThreadLocalRandom.current()
-                            .nextDouble(gen.getMinAmount(), gen.getMaxAmount()))
-                            .setScale(2, RoundingMode.HALF_UP))
-                    .merchantId(randomMerchantId)
-                    .createdAt(LocalDateTime.now())
-                    .build();
+                if (apiTx != null) {
+                    //Add transaction ID and date
+                    Transaction finalTx = apiTx.toBuilder()
+                            .transactionId(txIdCounter.getAndIncrement())
+                            .createdAt(LocalDateTime.now())
+                            .build();
 
-            producer.sendTestTransaction(tx);
+                    // 3. KÜLDÉS: Mehet a Kafkára
+                    producer.sendTestTransaction(finalTx);
+
+                    System.out.println("Sikeresen lekérve és küldve: " + finalTx.getTransactionId());
+                }
+            } catch (Exception e) {
+                System.err.println("Hiba az API hívás közben: " + e.getMessage());
+            }
             Thread.sleep(gen.getSleepMs());
         }
     }

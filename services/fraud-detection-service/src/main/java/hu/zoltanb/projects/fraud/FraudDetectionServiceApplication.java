@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.web.client.RestClient;
 
 @SpringBootApplication
 @EnableKafka
@@ -17,6 +18,11 @@ public class FraudDetectionServiceApplication {
 
     @Value("${fraud.generator.initial-delay-ms}")
     private long initialDelay;
+
+    @Bean
+    public RestClient restClient() {
+        return RestClient.create();
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(FraudDetectionServiceApplication.class, args);
