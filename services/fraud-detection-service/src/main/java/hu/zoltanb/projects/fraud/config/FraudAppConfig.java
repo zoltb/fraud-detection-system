@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
 @Configuration
-@ConfigurationProperties(prefix = "fraud")
+@ConfigurationProperties(prefix = "fraud") // A "fraud" ágtól indulunk
 @Data
 public class FraudAppConfig {
 

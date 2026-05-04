@@ -41,11 +41,13 @@ public class TransactionGeneratorService {
                             .createdAt(LocalDateTime.now())
                             .build();
 
-                    // sending to Kafka
+                    // 3. KÜLDÉS: Mehet a Kafkára
                     producer.sendTestTransaction(finalTx);
+
+                    System.out.println("Sikeresen lekérve és küldve: " + finalTx.getTransactionId());
                 }
             } catch (Exception e) {
-                System.err.println("Error during API call: " + e.getMessage());
+                System.err.println("Hiba az API hívás közben: " + e.getMessage());
             }
             Thread.sleep(gen.getSleepMs());
         }
