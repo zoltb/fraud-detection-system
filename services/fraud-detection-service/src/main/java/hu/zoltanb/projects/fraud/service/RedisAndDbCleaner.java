@@ -3,6 +3,7 @@ package hu.zoltanb.projects.fraud.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ public class RedisAndDbCleaner {
     private final JdbcTemplate jdbcTemplate;
 
     @PostConstruct
+    @ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true")
     public void cleanOnStart() {
         redisTemplate.getConnectionFactory().getConnection().flushAll();
         log.info("Redis cache is empty!");

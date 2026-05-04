@@ -6,6 +6,7 @@ import hu.zoltanb.projects.fraud.model.TransactionEntity;
 import hu.zoltanb.projects.fraud.model.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true")
 public class TransactionConsumer {
 
     private final TransactionRepository repository;

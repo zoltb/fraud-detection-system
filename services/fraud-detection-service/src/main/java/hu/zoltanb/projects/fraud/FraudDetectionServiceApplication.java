@@ -32,15 +32,12 @@ public class FraudDetectionServiceApplication {
     public CommandLineRunner testKafka(TransactionGeneratorService generator) {
         return args -> {
             //waiting 3 sec to Kafka Consumer be ready
-            System.out.println("waiting for Kafka start");
             Thread.sleep(initialDelay);
-            System.out.println("Starting mass data generation...");
             //Number of trades
             generator.generateData(transactionCount);
 
             System.out.println("All transactions are sent to Kafka!");
 
-            System.out.println("Test trade is done");
         };
     }
 

@@ -4,17 +4,16 @@ import hu.zoltanb.projects.fraud.config.FraudAppConfig;
 import hu.zoltanb.projects.fraud.model.Transaction;
 import hu.zoltanb.projects.fraud.service.TransactionProducer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true")
 public class TransactionGeneratorService {
 
     private final TransactionProducer producer;
