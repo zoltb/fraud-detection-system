@@ -1,6 +1,8 @@
 package hu.zoltanb.projects.fraud;
 
+import hu.zoltanb.projects.fraud.config.FraudAppConfig;
 import hu.zoltanb.projects.fraud.transactiongenerator.TransactionGeneratorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,11 +15,8 @@ import org.springframework.web.client.RestClient;
 @EnableKafka
 public class FraudDetectionServiceApplication {
 
-    @Value("${fraud.generator.transaction-count}")
-    private int transactionCount;
-
-    @Value("${fraud.generator.initial-delay-ms}")
-    private long initialDelay;
+    @Autowired
+    private FraudAppConfig config;
 
     @Bean
     public RestClient restClient() {
@@ -32,9 +31,11 @@ public class FraudDetectionServiceApplication {
     public CommandLineRunner testKafka(TransactionGeneratorService generator) {
         return args -> {
             //waiting 3 sec to Kafka Consumer be ready
-            Thread.sleep(initialDelay);
+            long delay = config.getGenerator().getInitialDelay();
+            int count = config.getGenerator().getTransactionCount();
+            Thread.sleep(delay);
             //Number of trades
-            generator.generateData(transactionCount);
+            generator.generateData(count);
 
             System.out.println("All transactions are sent to Kafka!");
 
