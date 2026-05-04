@@ -51,14 +51,16 @@ fraud:
   detection:
     card-test:
       amount-limit: 2000
-      count-limit: 3
+      count-limit: 4
       duration-minutes: 10
     velocity:
-      count-limit: 10
+      count-limit: 15
       duration-minutes: 1
   generator:
+    transaction-count: 10000
+    initial-delay-ms: 3000
     min-user-id: 100
-    max-user-id: 199
+    max-user-id: 500
     min-merchant-id: 100
     max-merchant-id: 110
     min-amount: 50

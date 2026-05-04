@@ -3,7 +3,7 @@ services:
     image: postgres:15
     container_name: fraud-postgres
     environment:
-      POSTGRES_DB: frauddb
+      POSTGRES_DB: fraud_db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:
