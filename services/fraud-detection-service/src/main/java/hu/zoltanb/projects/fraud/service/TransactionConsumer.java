@@ -50,12 +50,6 @@ public class TransactionConsumer {
             log.warn("!!!Possible fraud transaction!!! ID:{}, Amount: {} ",
                     message.getTransactionId(), message.getAmount());
         }
-
-
-        /*if (message.getAmount().compareTo(new java.math.BigDecimal("30000")) > 0) {
-            log.warn("!!!Possible fraud transaction!!! Transaction ID:{}, User {}",
-                    message.getTransactionId(), message.getUserId());
-        }*/
     }
 
 }

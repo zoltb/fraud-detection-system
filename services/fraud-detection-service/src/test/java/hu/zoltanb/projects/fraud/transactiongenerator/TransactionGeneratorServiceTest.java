@@ -65,7 +65,7 @@ public class TransactionGeneratorServiceTest {
         }
 
         @Test
-        @DisplayName("Az ID-knak növekedniük kell és a dátumot ki kell tölteni")
+        @DisplayName("ID incrementation and date check")
         void shouldEnrichDataCorrectly() throws InterruptedException {
             // GIVEN
             Transaction mockApiTx = Transaction.builder().amount(BigDecimal.valueOf(10.0)).build();
