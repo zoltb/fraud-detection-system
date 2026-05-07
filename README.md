@@ -1,5 +1,7 @@
 # fraud-detection-system
 
+[![codecov](https://codecov.io/gh/zoltb/fraud-detection-system/graph/badge.svg?token=IJTUTCE94L)](https://codecov.io/gh/zoltb/fraud-detection-system)
+
 ![Status](https://img.shields.io/badge/status-under--construction-yellow?style=for-the-badge)
 
 > [!IMPORTANT]
