@@ -1,5 +1,6 @@
 name: Java CI with Maven and Codecov
 on:
+  workflow_dispatch: #To use Run workflow on GitHub
   push:
     branches: [ "main", "create-testing" ]
   pull_request:
