@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
 public class TransactionProducer {
 
     private final KafkaTemplate<String, Transaction> kafkaTemplate;

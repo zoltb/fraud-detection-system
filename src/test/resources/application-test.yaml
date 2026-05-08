@@ -1,3 +1,17 @@
 app:
   scheduling:
     enabled: false
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:fraudtest;DB_CLOSE_DELAY=-1;MODE=PostgreSQL # Vagy amilyen DB-t használsz alapból
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  sql:
+    init:
+      mode: always # Ez létrehozza a táblákat, ha van schema.sql-ed
+logging:
+  level:
+    hu.zoltanb.projects.fraud: DEBUG
+    org.springframework.jdbc: DEBUG

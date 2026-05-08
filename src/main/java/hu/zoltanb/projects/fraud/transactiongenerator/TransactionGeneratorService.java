@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
 public class TransactionGeneratorService {
 
     private final TransactionProducer producer;

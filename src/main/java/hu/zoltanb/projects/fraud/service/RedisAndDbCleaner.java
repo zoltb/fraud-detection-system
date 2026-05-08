@@ -17,7 +17,7 @@ public class RedisAndDbCleaner {
     private final JdbcTemplate jdbcTemplate;
 
     @PostConstruct
-    @ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true")
+    @ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
     public void cleanOnStart() {
         redisTemplate.getConnectionFactory().getConnection().flushAll();
         log.info("Redis cache is empty!");
