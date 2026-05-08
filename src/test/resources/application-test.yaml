@@ -3,6 +3,13 @@ app:
     enabled: false
 
 spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
   datasource:
     url: jdbc:h2:mem:fraudtest;DB_CLOSE_DELAY=-1;MODE=PostgreSQL # Vagy amilyen DB-t használsz alapból
     driver-class-name: org.h2.Driver
