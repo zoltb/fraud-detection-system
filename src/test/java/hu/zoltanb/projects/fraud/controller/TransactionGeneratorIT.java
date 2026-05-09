@@ -52,7 +52,7 @@ class TransactionGeneratorIT {
     private FraudAppConfig config;
 
     private FraudAppConfig.Generator generator = new FraudAppConfig.Generator();
-    ;
+
 
     @BeforeEach
     void setUp() {
