@@ -37,7 +37,7 @@ public class TransactionGeneratorServiceTest {
     private RestClient restClient;
     @Mock
     private FraudAppConfig config;
-    @InjectMocks
+
     private TransactionGeneratorService service;
 
     @BeforeEach
@@ -50,6 +50,9 @@ public class TransactionGeneratorServiceTest {
         var mockGen = mock(FraudAppConfig.Generator.class);
         when(config.getGenerator()).thenReturn(mockGen);
         when(mockGen.getSleepMs()).thenReturn(0);
+        when(mockGen.getApiUrl()).thenReturn("http://localhost");
+        // the created mockbuilder will run
+        service = new TransactionGeneratorService(producer, restClientBuilder, config);
     }
 
     @Nested
