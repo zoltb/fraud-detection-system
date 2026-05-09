@@ -61,7 +61,7 @@ public class RedisAndDbCleanerTest {
 
     @Test
     @DisplayName("InterruptedException test: checking the catch")
-    void cleanOnStart_HandlesInterrupt() throws InterruptedException {
+    void cleanOnStart_HandlesInterrupt() throws Exception { // Because of the checked exception should be handled
         // GIVEN: Sleeper throws exception
         doThrow(new InterruptedException())
                 .when(sleeper).sleep(anyLong());
@@ -73,5 +73,8 @@ public class RedisAndDbCleanerTest {
         // Checking catch where the Thread will be interrupted again.
         assertTrue(Thread.currentThread().isInterrupted());
         // Codecov will see the run of the catch!
+
+        // Clean the thread
+        Thread.interrupted();
     }
 }
