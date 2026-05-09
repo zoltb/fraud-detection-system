@@ -60,7 +60,7 @@ public class RedisAndDbCleanerTest {
     }
 
     @Test
-    @DisplayName("InterruptedException teszt: Lefedi a catch ágat")
+    @DisplayName("InterruptedException test: checking the catch")
     void cleanOnStart_HandlesInterrupt() throws InterruptedException {
         // GIVEN: Sleeper throws exception
         doThrow(new InterruptedException())

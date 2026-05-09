@@ -29,7 +29,7 @@ public class FraudDetectionService {
                 return new FraudCheckResult(true, "CARD_TESTING");
             }
         }
-        //Velocity test
+        //Velocity test is the 2nd because every CardTest can be Velocity as well. The key for difference it is the amount.
         String vKey = "velocity:" + tx.getUserId();
         Long vCount = redisTemplate.opsForValue().increment(vKey);
         if (vCount != null && vCount == 1) redisTemplate.expire(vKey, Duration.ofMinutes(det.getVelocity().getDurationMinutes()));
