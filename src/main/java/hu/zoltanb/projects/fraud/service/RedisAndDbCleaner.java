@@ -33,8 +33,9 @@ public class RedisAndDbCleaner {
             sleeper.sleep(10000);
             log.info("===> Resume processing...");
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
             log.error("Sleep interrupted", e);
+            Thread.currentThread().interrupt();
+
         }
 
     }
