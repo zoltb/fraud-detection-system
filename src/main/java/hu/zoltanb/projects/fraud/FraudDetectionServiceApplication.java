@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.web.client.RestClient;
 
@@ -28,6 +29,7 @@ public class FraudDetectionServiceApplication {
     }
 
     @Bean
+    @Profile("!test") // it runs only if it is not a test
     public CommandLineRunner testKafka(TransactionGeneratorService generator) {
         return args -> {
             //waiting 3 sec to Kafka Consumer be ready

@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.*;
 
 import hu.zoltanb.projects.fraud.config.FraudAppConfig;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,20 +22,16 @@ class TransactionMockControllerTest {
 
     @Mock
     private FraudAppConfig config;
-
     @Mock
     private FraudAppConfig.Generator generator; // A belső osztály mockolása
-
     @InjectMocks
     private TransactionMockController controller;
-
     @BeforeEach
     void setUp() {
         // MockMvc in standalone mode
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
         when(config.getGenerator()).thenReturn(generator);
-
         when(generator.getMinUserId()).thenReturn(1L);
         when(generator.getMaxUserId()).thenReturn(10L);
         when(generator.getMinMerchantId()).thenReturn(1L);
@@ -42,8 +39,8 @@ class TransactionMockControllerTest {
         when(generator.getMinAmount()).thenReturn(100.0);
         when(generator.getMaxAmount()).thenReturn(200.0);
     }
-
     @Test
+    @DisplayName("Should return transaction within the ranges")
     void getRandomTransaction_ShouldReturnTransactionWithCorrectRanges() throws Exception {
         mockMvc.perform(get("/api/mock/transactions"))
                 .andExpect(status().isOk())

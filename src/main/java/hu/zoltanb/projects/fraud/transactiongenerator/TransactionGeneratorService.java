@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
-@RequiredArgsConstructor
 @ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
 public class TransactionGeneratorService {
 
@@ -21,6 +20,14 @@ public class TransactionGeneratorService {
     private final FraudAppConfig config;
     //Transaction ID need to be incremental and unique
     private final AtomicLong txIdCounter = new AtomicLong(1);
+
+    public TransactionGeneratorService(TransactionProducer producer,
+                                       RestClient.Builder restClientBuilder,
+                                       FraudAppConfig config) {
+        this.producer = producer;
+        this.config = config;
+        this.restClient = restClientBuilder.baseUrl("http://localhost:8080").build();
+    }
 
     public void generateData(int count) throws InterruptedException {
         var gen = config.getGenerator();
