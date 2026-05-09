@@ -1,5 +1,6 @@
 package hu.zoltanb.projects.fraud.service;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class FraudReportingHelperTest {
     JdbcTemplate jdbcTemplate;
 
     @Test
-        // It is void so we need CapturedOutput
+    @DisplayName("Check the logs after having transactions")
     void shouldLogCorrectStatistics(CapturedOutput capturedOutput) {
         // 1. Generate test data in H2
         // User 1: fraud_type = null

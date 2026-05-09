@@ -22,7 +22,7 @@ public class TransactionProducerTest {
     private TransactionProducer transactionProducer;
 
     @Test
-    @DisplayName("Check kafka gets the right topic from TransactionProducer")
+    @DisplayName("Check Kafka gets the right topic from TransactionProducer")
     void SenTestTransaction_shouldSentToCorrectTopic() {
         //Add fields
         Transaction transaction = new Transaction();

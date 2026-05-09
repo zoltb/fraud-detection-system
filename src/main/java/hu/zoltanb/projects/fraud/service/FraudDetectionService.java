@@ -40,6 +40,4 @@ public class FraudDetectionService {
 
         return new FraudCheckResult(false, null);
     }
-
-
 }

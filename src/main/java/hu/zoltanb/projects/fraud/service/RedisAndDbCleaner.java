@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.retry.backoff.Sleeper;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +16,7 @@ public class RedisAndDbCleaner {
 
     private final StringRedisTemplate redisTemplate;
     private final JdbcTemplate jdbcTemplate;
+    private final Sleeper sleeper;
 
     @PostConstruct
     @ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
@@ -28,13 +30,19 @@ public class RedisAndDbCleaner {
 
         try {
             log.info("===> CLEANUP DONE. Waiting 10 seconds for visual check...");
-            Thread.sleep(10000);
+            sleeper.sleep(10000);
             log.info("===> Resume processing...");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             log.error("Sleep interrupted", e);
         }
 
+    }
+    @Component // For recognition of the Spring and for unit test
+    public static class Sleeper {
+        public void sleep(long millis) throws InterruptedException {
+            Thread.sleep(millis);
+        }
     }
 
 }
