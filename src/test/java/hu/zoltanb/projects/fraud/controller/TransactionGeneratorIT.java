@@ -52,11 +52,6 @@ class TransactionGeneratorIT {
     private FraudAppConfig config;
 
     private FraudAppConfig.Generator generator = new FraudAppConfig.Generator();
-<<<<<<< .merge_file_k37KEZ
-    ;
-=======
-
->>>>>>> .merge_file_bYHawl
 
     @BeforeEach
     void setUp() {
