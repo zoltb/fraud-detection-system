@@ -31,19 +31,28 @@ public class TransactionGeneratorServiceTest {
 
     @Mock
     private TransactionProducer producer;
+    @Mock
+    private RestClient.Builder restClientBuilder;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS) //goes forward in the "call chain" if there is null value
     private RestClient restClient;
     @Mock
     private FraudAppConfig config;
-    @InjectMocks
+
     private TransactionGeneratorService service;
 
     @BeforeEach
     void setUp() {
-        // Alapértelmezett konfiguráció mockolása, hogy ne várjon a teszt
+        // It gives back itself in case of call of baseUrl()
+        when(restClientBuilder.baseUrl(anyString())).thenReturn(restClientBuilder);
+        // At the end gives back the mock
+        when(restClientBuilder.build()).thenReturn(restClient);
+
         var mockGen = mock(FraudAppConfig.Generator.class);
         when(config.getGenerator()).thenReturn(mockGen);
         when(mockGen.getSleepMs()).thenReturn(0);
+        when(mockGen.getApiUrl()).thenReturn("http://localhost");
+        // the created mockbuilder will run
+        service = new TransactionGeneratorService(producer, restClientBuilder, config);
     }
 
     @Nested

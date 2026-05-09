@@ -35,6 +35,7 @@ public class FraudAppConfig {
     @Data
     public static class Generator {
         // Getterek és Setterek (vagy @Data annotáció a Lomboktól)
+        private String apiUrl;
         private int transactionCount;
         private long initialDelay; // A YAML-ben: initial-delay
 
