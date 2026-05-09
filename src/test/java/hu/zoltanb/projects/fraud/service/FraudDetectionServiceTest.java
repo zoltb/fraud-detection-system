@@ -121,4 +121,93 @@ public class FraudDetectionServiceTest {
         // Ellenőrizzük, hogy meghívódott-e a redisTemplate.expire()
         verify(stringRedisTemplate, atLeastOnce()).expire(anyString(), any(Duration.class));
     }
+
+    // Testing null cases
+    @Test
+    @DisplayName("Should handle cases when Redis returns null")
+    void check_ShouldHandleRedisNullReturns() {
+        // GIVEN Redis increment gives back null (eg. timeout or network error)
+        when(valueOperations.increment(anyString())).thenReturn(null);
+
+        // WHEN
+        FraudCheckResult result = service.check(tx);
+
+        // THEN
+        assertFalse(result.isFraud());
+        assertNull(result.fraudType());
+
+        // Checking expire call
+        verify(stringRedisTemplate, never()).expire(anyString(), any());
+    }
+
+    @Test
+    @DisplayName("Should handle null only for Velocity check")
+    void check_ShouldHandleVelocityNullWhenCardTestIsOk() {
+        // GIVEN we have value for card testing but for velocity we receive null
+        when(valueOperations.increment(startsWith("card_test:"))).thenReturn(1L);
+        when(valueOperations.increment(startsWith("velocity:"))).thenReturn(null);
+
+        // WHEN
+        FraudCheckResult result = service.check(tx);
+
+        // THEN
+        assertFalse(result.isFraud());
+    }
+
+    @Test
+    @DisplayName("Should not call expire if counter is not 1")
+    void check_ShouldNotExpireIfCounterIsTwo() {
+        // GIVEN
+        when(valueOperations.increment(anyString())).thenReturn(2L);
+
+        // WHEN
+        service.check(tx);
+
+        // THEN
+        // we didn't call expire because we didn't receive 1
+        verify(stringRedisTemplate, never()).expire(anyString(), any(Duration.class));
+    }
+    @Test
+    @DisplayName("Should skip card testing if amount is above limit")
+    void check_ShouldSkipCardTesting_WhenAmountIsLarge() {
+        // GIVEN
+        tx = Transaction.builder().userId(1L).amount(new BigDecimal("500")).build();
+        when(valueOperations.increment(startsWith("velocity:"))).thenReturn(1L);
+
+        // WHEN
+        service.check(tx);
+
+        // THEN
+        verify(valueOperations, never()).increment(startsWith("card_test:"));
+        // BUT velocity test should run
+        verify(valueOperations).increment(startsWith("velocity:"));
+    }
+
+    @Test
+    @DisplayName("Should handle null Redis for Card testing but continue to Velocity")
+    void check_ShouldHandleNullCardCount_AndContinue() {
+        // GIVEN Card increment null and velocity is ok
+        tx = Transaction.builder().userId(1L).amount(new BigDecimal("10")).build();
+        when(valueOperations.increment(startsWith("card_test:"))).thenReturn(null);
+        when(valueOperations.increment(startsWith("velocity:"))).thenReturn(1L);
+
+        // WHEN
+        service.check(tx);
+
+        // THEN Didn't throw nullPointer
+        verify(valueOperations).increment(startsWith("velocity:"));
+    }
+
+    @Test
+    @DisplayName("Should not fraud if both Redis returns are null")
+    void check_ShouldHandleAllRedisNulls() {
+        // GIVEN Every Redis call is null
+        when(valueOperations.increment(anyString())).thenReturn(null);
+
+        // WHEN
+        FraudCheckResult result = service.check(tx);
+
+        // THEN
+        assertFalse(result.isFraud());
+    }
 }
