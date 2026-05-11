@@ -24,9 +24,9 @@ spring:
   data:
     redis:
       host: localhost
-      port: 6379
+      port: 6380
 
-  # 4. Kafka setup (using 29092 as outsider port)
+  # 4. Kafka setup
   kafka:
     bootstrap-servers: localhost:29092
 
@@ -57,7 +57,7 @@ fraud:
       count-limit: 15
       duration-minutes: 1
   generator:
-    transaction-count: 10000
+    transaction-count: 10
     initial-delay: 3000
     min-user-id: 100
     max-user-id: 500
