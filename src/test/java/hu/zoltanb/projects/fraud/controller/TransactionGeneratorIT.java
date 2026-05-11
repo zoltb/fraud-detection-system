@@ -11,11 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -29,9 +26,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-/*@ActiveProfiles("test")
-@RestClientTest(value = TransactionGeneratorService.class)
-*/
 @ActiveProfiles("test")
 @TestPropertySource(properties = "app.scheduling.enabled=true")
 @RestClientTest(TransactionGeneratorService.class)
@@ -93,8 +87,8 @@ class TransactionGeneratorIT {
 
         // Data check
         assertThat(finalTx.getUserId()).isEqualTo(EXPECTED_USER_ID);
-        assertThat(finalTx.getTransactionId()).isNotNull(); // Az AtomicLong-ból jön
-        assertThat(finalTx.getCreatedAt()).isNotNull();    // A LocalDateTime.now()-ból jön
+        assertThat(finalTx.getTransactionId()).isNotNull(); // From AtomicLong
+        assertThat(finalTx.getCreatedAt()).isNotNull();    // From LocalDateTime.now()
         assertThat(finalTx.getAmount()).isEqualByComparingTo(EXPECTED_AMOUNT);
 
         // check every call related to the mock

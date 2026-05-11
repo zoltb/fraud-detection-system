@@ -34,10 +34,10 @@ public class FraudAppConfig {
 
     @Data
     public static class Generator {
-        // Getterek és Setterek (vagy @Data annotáció a Lomboktól)
+        // Getters and Setters or @Data annotation from Lombok)
         private String apiUrl;
         private int transactionCount;
-        private long initialDelay; // A YAML-ben: initial-delay
+        private long initialDelay; // eg.: in YAML-ben: initial-delay
 
         private long minUserId;
         private long maxUserId;
