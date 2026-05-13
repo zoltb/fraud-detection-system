@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -32,6 +33,6 @@ public class TransactionProducerTest {
 
         // Assert
         // Verification: kafkaTemplate.send was called with the "transactions" topic
-        verify(kafkaTemplate).send(eq("transactions"), eq(transaction));
+        verify(kafkaTemplate).send(eq("transactions"), eq("123"), any(Transaction.class));
     }
 }
