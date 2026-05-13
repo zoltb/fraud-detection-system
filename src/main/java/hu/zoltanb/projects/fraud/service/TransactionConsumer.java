@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
@@ -30,10 +31,12 @@ public class TransactionConsumer {
             groupId = "fraud-group-#{T(java.util.UUID).randomUUID().toString()}",
             concurrency = "3")
     public void consume(Transaction message,
-                        @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partitionId) {
-        log.info("===> KAFKA MESSAGE ARRIVED on PARTITION: {} | TransactionId: {} | User: {}",
-                partitionId, message.getTransactionId(), message.getUserId());
-
+                        ConsumerRecordMetadata metadata) {
+        int partitionId = metadata.partition();
+        log.info("===> THREAD: {} | PARTITION: {} | TransactionId: {}",
+                Thread.currentThread().getName(),
+                partitionId,
+                message.getTransactionId());
         //Redis
         FraudCheckResult result = fraudService.check(message);
 

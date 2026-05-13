@@ -18,7 +18,7 @@ public class FraudReportingHelper {
 
     private final AtomicBoolean reportGenerated = new AtomicBoolean(false);
 
-    // Value from 21th line is 'false', after event it will be 'true'
+    // Value from 19th line is 'false', after event it will be 'true'
     @EventListener
     public void handleIdleEvent(ListenerContainerIdleEvent event) {
         if (reportGenerated.compareAndSet(false, true)) {

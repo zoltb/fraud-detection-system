@@ -3,6 +3,7 @@ package hu.zoltanb.projects.fraud.transactiongenerator;
 import hu.zoltanb.projects.fraud.config.FraudAppConfig;
 import hu.zoltanb.projects.fraud.model.Transaction;
 import hu.zoltanb.projects.fraud.service.TransactionProducer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -10,6 +11,7 @@ import org.springframework.web.client.RestClient;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Slf4j
 @Service
 @ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
 public class TransactionGeneratorService {
@@ -30,6 +32,9 @@ public class TransactionGeneratorService {
 
     public void generateData(int count) throws InterruptedException {
         var gen = config.getGenerator();
+
+        long startTime = System.currentTimeMillis();
+        log.info("Starting generation and sending of {} message...", count);
 
         for (int i = 0; i < count; i++) {
             try {
@@ -54,5 +59,7 @@ public class TransactionGeneratorService {
             }
             Thread.sleep(gen.getSleepMs());
         }
+        long duration = System.currentTimeMillis() - startTime;
+        System.out.println("PRODUCER is ready, the: " + count + " messages were sent in " + duration + " ms.");
     }
 }
