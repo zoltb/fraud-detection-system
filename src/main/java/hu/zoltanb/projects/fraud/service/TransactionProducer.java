@@ -19,6 +19,6 @@ public class TransactionProducer {
 
     public void sendTestTransaction(Transaction transaction) {
         log.info("===> SENT: {}", transaction.getTransactionId());
-        kafkaTemplate.send("transactions", transaction);
+        kafkaTemplate.send("transactions", transaction.getUserId().toString(),transaction);
     }
 }

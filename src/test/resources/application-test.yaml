@@ -5,25 +5,37 @@ app:
 spring:
   kafka:
     bootstrap-servers: localhost:29092  # Docker ps szerinti port
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
     consumer:
-      group-id: fraud-test-group
-      auto-offset-reset: earliest
+      auto-offset-reset: latest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+        spring.json.value.default.type: "hu.zoltanb.projects.fraud.model.Transaction"
   data:
     redis:
       host: localhost
       port: 6380
   datasource:
-    url: jdbc:h2:mem:fraudtest;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
-  sql:
-    init:
-      mode: always # Ez létrehozza a táblákat, ha van schema.sql-ed
+    url: jdbc:postgresql://localhost:5433/fraud_test_db
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+
 logging:
   level:
     hu.zoltanb.projects.fraud: DEBUG

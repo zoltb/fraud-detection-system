@@ -1,3 +1,7 @@
+app:
+  scheduling:
+    enabled: true
+
 spring:
   # 1. Block Docker Compose Lifecycle Manager
   docker:
@@ -24,7 +28,7 @@ spring:
   data:
     redis:
       host: localhost
-      port: 6380
+      port: 6379
 
   # 4. Kafka setup
   kafka:
@@ -39,7 +43,6 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
     consumer:
-      group-id: fraud-group-clean-start
       auto-offset-reset: latest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer

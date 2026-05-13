@@ -1,32 +1,32 @@
 services:
   postgres:
     image: postgres:15
-    container_name: fraud-postgres
+    container_name: fraud-postgres-test
     environment:
-      POSTGRES_DB: fraud_db
+      POSTGRES_DB: fraud_db_test
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:
-      - '5432:5432'
+      - '5433:5432'
 
   redis:
     image: 'redis:latest'
-    container_name: fraud-redis
+    container_name: fraud-redis-test
     ports:
-      - '6379:6379'
+      - '6380:6379'
 
   kafka:
     image: 'apache/kafka:latest'
-    container_name: fraud-kafka
+    container_name: fraud-kafka-test
     ports:
-      - '9092:9092'
-      - '29092:29092'
+      - '9093:9092'
+      - '39092:39092'
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:29092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://fraud-kafka:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@fraud-kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:39092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://fraud-kafka:9092,PLAINTEXT_HOST://localhost:39092
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@fraud-kafka:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
