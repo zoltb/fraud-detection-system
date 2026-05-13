@@ -1,6 +1,9 @@
 app:
-  scheduling:
-    enabled: true
+  kafka:
+    topic: transactions
+    partitions: 3 # just for fun
+    scheduling:
+      enabled: true
 
 spring:
   # 1. Block Docker Compose Lifecycle Manager
@@ -53,14 +56,14 @@ spring:
 fraud:
   detection:
     card-test:
-      amount-limit: 2000
-      count-limit: 4
-      duration-minutes: 10
+      amount-limit: 4000
+      count-limit: 2
+      duration-minutes: 2
     velocity:
       count-limit: 15
       duration-minutes: 1
   generator:
-    transaction-count: 3000
+    transaction-count: 10000
     initial-delay: 3000
     min-user-id: 100
     max-user-id: 500

@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -21,11 +23,16 @@ public class TransactionConsumer {
     private final FraudDetectionService fraudService;
     private final KafkaTemplate<String, Transaction> kafkaTemplate;
 
-    @KafkaListener(topics = "transactions",
+    // Using getUserId to have data in the same partition
+    @KafkaListener(
+            topics = "transactions",
             //Auto-cleanup for Kafka
-            groupId = "fraud-group-#{T(java.util.UUID).randomUUID().toString()}")
-    public void consume(Transaction message) {
-        log.info("===> KAFKA MESSAGE ARRIVED: {}", message.getTransactionId());
+            groupId = "fraud-group-#{T(java.util.UUID).randomUUID().toString()}",
+            concurrency = "3")
+    public void consume(Transaction message,
+                        @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partitionId) {
+        log.info("===> KAFKA MESSAGE ARRIVED on PARTITION: {} | TransactionId: {} | User: {}",
+                partitionId, message.getTransactionId(), message.getUserId());
 
         //Redis
         FraudCheckResult result = fraudService.check(message);
@@ -39,6 +46,7 @@ public class TransactionConsumer {
                 .createdAt(message.getCreatedAt())
                 .fraud(result.isFraud())
                 .fraudType(result.fraudType())
+                .partition(partitionId)
                 .build();
 
         // save into PostgreSQL

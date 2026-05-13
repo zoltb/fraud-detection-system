@@ -1,10 +1,7 @@
 package hu.zoltanb.projects.fraud.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +10,8 @@ import java.time.LocalDateTime;
 @Table(name = "transactions")
 @Data
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionEntity {
@@ -28,4 +27,5 @@ public class TransactionEntity {
 
     private boolean fraud;
     private String fraudType;
+    private Integer partition;
 }

@@ -45,7 +45,7 @@ public class TransactionConsumerTest {
         when(fraudDetectionService.check(message)).thenReturn(mockResult);
 
         // Call
-        transactionConsumer.consume(message);
+        transactionConsumer.consume(message,0);
 
         // Assert check of the fraudDetectionService
         verify(fraudDetectionService).check(message);
@@ -62,7 +62,7 @@ public class TransactionConsumerTest {
 
         when(fraudDetectionService.check(message)).thenReturn(fraudCheckResult);
 
-        transactionConsumer.consume(message);
+        transactionConsumer.consume(message, 0);
 
         verify(repository).save(argThat(TransactionEntity::isFraud));
     }
