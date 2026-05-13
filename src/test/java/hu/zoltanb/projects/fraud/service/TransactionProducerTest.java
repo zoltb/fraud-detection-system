@@ -29,7 +29,7 @@ public class TransactionProducerTest {
         transaction.setTransactionId(1234L);
         transaction.setUserId(123L);
         transactionProducer.sendTestTransaction(transaction);
-       
+
         // Assert
         // Verification: kafkaTemplate.send was called with the "transactions" topic
         verify(kafkaTemplate).send(eq("transactions"), eq(transaction));
