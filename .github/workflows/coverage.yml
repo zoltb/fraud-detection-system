@@ -15,7 +15,7 @@ jobs:
         env:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
-          POSTGRES_DB: fraud_db
+          POSTGRES_DB: fraud_test_db
         ports:
           - 5433:5432
         options: >-

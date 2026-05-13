@@ -27,8 +27,9 @@ public class TransactionProducerTest {
         //Add fields
         Transaction transaction = new Transaction();
         transaction.setTransactionId(1234L);
-        transactionProducer.sendTestTransaction(transaction);
         transaction.setUserId(123L);
+        transactionProducer.sendTestTransaction(transaction);
+       
         // Assert
         // Verification: kafkaTemplate.send was called with the "transactions" topic
         verify(kafkaTemplate).send(eq("transactions"), eq(transaction));
