@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,6 +22,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TransactionConsumerTest {
+
+    @Mock
+    private ConsumerRecordMetadata metadata;
 
     @Mock
     private FraudDetectionService fraudDetectionService;
@@ -45,7 +49,7 @@ public class TransactionConsumerTest {
         when(fraudDetectionService.check(message)).thenReturn(mockResult);
 
         // Call
-        transactionConsumer.consume(message,0);
+        transactionConsumer.consume(message,metadata);
 
         // Assert check of the fraudDetectionService
         verify(fraudDetectionService).check(message);
@@ -62,7 +66,7 @@ public class TransactionConsumerTest {
 
         when(fraudDetectionService.check(message)).thenReturn(fraudCheckResult);
 
-        transactionConsumer.consume(message, 0);
+        transactionConsumer.consume(message, metadata);
 
         verify(repository).save(argThat(TransactionEntity::isFraud));
     }
