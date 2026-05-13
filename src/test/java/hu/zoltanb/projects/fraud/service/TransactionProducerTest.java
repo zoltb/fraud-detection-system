@@ -23,14 +23,14 @@ public class TransactionProducerTest {
 
     @Test
     @DisplayName("Check Kafka gets the right topic from TransactionProducer")
-    void SenTestTransaction_shouldSentToCorrectTopic() {
+    void TestTransaction_shouldSentToCorrectTopic() {
         //Add fields
         Transaction transaction = new Transaction();
         transaction.setTransactionId(1234L);
         transactionProducer.sendTestTransaction(transaction);
+        transaction.setUserId(123L);
         // Assert
         // Verification: kafkaTemplate.send was called with the "transactions" topic
         verify(kafkaTemplate).send(eq("transactions"), eq(transaction));
     }
-
 }
