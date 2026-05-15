@@ -53,7 +53,7 @@ spring:
 
   # 4. Kafka setup
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: localhost:9092
 
     listener:
       # 10000ms = After 10 sec sends Idle event
