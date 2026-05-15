@@ -52,7 +52,7 @@ public class RedisAndDbCleanerTest {
         // Checking flushAll
         verify(connection, times(1)).flushAll();
         verify(jdbcTemplate).execute(contains("TRUNCATE"));
-        verify(sleeper).sleep(10000);
+        verify(sleeper).sleep(5000);
 
         // Checking SQL Truncate
         verify(jdbcTemplate, times(1))
