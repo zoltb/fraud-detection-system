@@ -12,14 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
 public class RedisAndDbCleaner {
 
     private final StringRedisTemplate redisTemplate;
     private final JdbcTemplate jdbcTemplate;
     private final Sleeper sleeper;
 
+
     @PostConstruct
-    @ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
     public void cleanOnStart() {
         redisTemplate.getConnectionFactory().getConnection().flushAll();
         log.info("Redis cache is empty!");
@@ -29,8 +30,8 @@ public class RedisAndDbCleaner {
         log.info("PostgreSQL table is empty and IDs are reset!");
 
         try {
-            log.info("===> CLEANUP DONE. Waiting 10 seconds for visual check...");
-            sleeper.sleep(10000);
+            log.info("===> CLEANUP DONE. Waiting 5 seconds for visual check...");
+            sleeper.sleep(5000);
             log.info("===> Resume processing...");
         } catch (InterruptedException e) {
             log.error("Sleep interrupted: {}", e.getMessage());
