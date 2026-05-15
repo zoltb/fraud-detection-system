@@ -5,6 +5,7 @@ import hu.zoltanb.projects.fraud.service.TransactionConsumer;
 import hu.zoltanb.projects.fraud.service.TransactionProducer;
 import hu.zoltanb.projects.fraud.transactiongenerator.TransactionGeneratorService;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -13,6 +14,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@EnableAutoConfiguration(exclude = {
+        org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration.class
+})
 class FraudDetectionServiceApplicationTest {
 
     /**
