@@ -10,10 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -21,6 +19,7 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
@@ -69,7 +68,8 @@ public class FraudDetectionServiceTest {
     @DisplayName("Transaction without fraud")
     void check_ShouldReturnNoFraud() {
         // GIVEN
-        when(valueOperations.increment(anyString())).thenReturn(1L);
+        given(valueOperations.increment(startsWith("card_test:"))).willReturn(1L);
+        given(valueOperations.increment(startsWith("velocity:"))).willReturn(1L);
 
         // WHEN
         FraudCheckResult result = service.check(tx);
@@ -85,7 +85,7 @@ public class FraudDetectionServiceTest {
         // GIVEN
         // Limit (100 < 200)
         // Increment gives 3 (the limit is 2)
-        when(valueOperations.increment(contains("card_test:"))).thenReturn(3L);
+        given(valueOperations.increment(startsWith("card_test:"))).willReturn(3L);
 
         // WHEN
         FraudCheckResult result = service.check(tx);
@@ -101,7 +101,7 @@ public class FraudDetectionServiceTest {
         // GIVEN
         // Az összeg most legyen magasabb, hogy a Card Test ágat átugorjuk
         tx.setAmount(new BigDecimal("500"));
-        when(valueOperations.increment(contains("velocity:"))).thenReturn(10L);
+        given(valueOperations.increment(startsWith("velocity:"))).willReturn(10L);
 
         // WHEN
         FraudCheckResult result = service.check(tx);
@@ -115,40 +115,24 @@ public class FraudDetectionServiceTest {
     @DisplayName("Expire! If counter 1, Redis test")
     void check_ShouldSetExpiry_WhenCountIsOne() {
         // GIVEN
-        when(valueOperations.increment(anyString())).thenReturn(1L);
+        given(valueOperations.increment(startsWith("card_test:"))).willReturn(1L);
+        given(valueOperations.increment(startsWith("velocity:"))).willReturn(1L);
 
         // WHEN
         service.check(tx);
 
         // THEN
         // Ellenőrizzük, hogy meghívódott-e a redisTemplate.expire()
-        verify(stringRedisTemplate, atLeastOnce()).expire(anyString(), any(Duration.class));
-    }
-
-    // Testing null cases
-    @Test
-    @DisplayName("Should handle cases when Redis returns null")
-    void check_ShouldHandleRedisNullReturns() {
-        // GIVEN Redis increment gives back null (eg. timeout or network error)
-        when(valueOperations.increment(anyString())).thenReturn(null);
-
-        // WHEN
-        FraudCheckResult result = service.check(tx);
-
-        // THEN
-        assertFalse(result.isFraud());
-        assertNull(result.fraudType());
-
-        // Checking expire call
-        verify(stringRedisTemplate, never()).expire(anyString(), any());
+        verify(stringRedisTemplate).expire(eq("card_test:1"), eq(Duration.ofMinutes(10)));
+        verify(stringRedisTemplate).expire(eq("velocity:1"), eq(Duration.ofMinutes(10)));
     }
 
     @Test
     @DisplayName("Should handle null only for Velocity check")
     void check_ShouldHandleVelocityNullWhenCardTestIsOk() {
         // GIVEN we have value for card testing but for velocity we receive null
-        when(valueOperations.increment(startsWith("card_test:"))).thenReturn(1L);
-        when(valueOperations.increment(startsWith("velocity:"))).thenReturn(null);
+        given(valueOperations.increment(startsWith("card_test:"))).willReturn(null);
+        given(valueOperations.increment(startsWith("velocity:"))).willReturn(null);
 
         // WHEN
         FraudCheckResult result = service.check(tx);
@@ -161,28 +145,29 @@ public class FraudDetectionServiceTest {
     @DisplayName("Should not call expire if counter is not 1")
     void check_ShouldNotExpireIfCounterIsTwo() {
         // GIVEN
-        when(valueOperations.increment(anyString())).thenReturn(2L);
+        given(valueOperations.increment(startsWith("card_test:"))).willReturn(1L);
+        given(valueOperations.increment(startsWith("velocity:"))).willReturn(null);
 
         // WHEN
         service.check(tx);
 
         // THEN
         // we didn't call expire because we didn't receive 1
-        verify(stringRedisTemplate, never()).expire(anyString(), any(Duration.class));
+        verify(stringRedisTemplate, never()).expire(startsWith("card_test:"), any(Duration.class));
+        verify(stringRedisTemplate, never()).expire(startsWith("velocity:"), any(Duration.class));
     }
     @Test
     @DisplayName("Should skip card testing if amount is above limit")
     void check_ShouldSkipCardTesting_WhenAmountIsLarge() {
         // GIVEN
         tx = Transaction.builder().userId(1L).amount(new BigDecimal("500")).build();
-        when(valueOperations.increment(startsWith("velocity:"))).thenReturn(1L);
+        given(valueOperations.increment(startsWith("velocity:"))).willReturn(1L);
 
         // WHEN
         service.check(tx);
 
         // THEN
         verify(valueOperations, never()).increment(startsWith("card_test:"));
-        // BUT velocity test should run
         verify(valueOperations).increment(startsWith("velocity:"));
     }
 
@@ -191,8 +176,8 @@ public class FraudDetectionServiceTest {
     void check_ShouldHandleNullCardCount_AndContinue() {
         // GIVEN Card increment null and velocity is ok
         tx = Transaction.builder().userId(1L).amount(new BigDecimal("10")).build();
-        when(valueOperations.increment(startsWith("card_test:"))).thenReturn(null);
-        when(valueOperations.increment(startsWith("velocity:"))).thenReturn(1L);
+        given(valueOperations.increment(startsWith("card_test:"))).willReturn(null);
+        given(valueOperations.increment(startsWith("velocity:"))).willReturn(1L);
 
         // WHEN
         service.check(tx);

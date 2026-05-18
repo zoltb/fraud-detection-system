@@ -21,6 +21,8 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -29,7 +31,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @ActiveProfiles("test")
 @TestPropertySource(properties = "app.scheduling.enabled=true")
 @RestClientTest(TransactionGeneratorService.class)
-class TransactionGeneratorIT {
+class TransactionGeneratorTest {
     @Autowired
     private TransactionGeneratorService generatorService;
 
@@ -49,7 +51,7 @@ class TransactionGeneratorIT {
 
     @BeforeEach
     void setUp() {
-        when(config.getGenerator()).thenReturn(generator);
+        given(config.getGenerator()).willReturn(generator);
 
         mockServer.reset();
     }
@@ -68,7 +70,7 @@ class TransactionGeneratorIT {
         Transaction mockApiTx = Transaction.builder()
                 .userId(EXPECTED_USER_ID)
                 .merchantId(EXPECTED_MERCHANT_ID)
-                .amount(new BigDecimal(String.valueOf(EXPECTED_AMOUNT)))
+                .amount(EXPECTED_AMOUNT)
                 .build();
 
         String jsonResponse = objectMapper.writeValueAsString(mockApiTx);
@@ -81,7 +83,7 @@ class TransactionGeneratorIT {
 
         // THEN - Get the data and capture it from the Service
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
-        verify(producer).sendTestTransaction(captor.capture());
+        then(producer).should().sendTestTransaction(captor.capture());
 
         Transaction finalTx = captor.getValue();
 

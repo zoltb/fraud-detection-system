@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,20 +43,18 @@ public class RedisAndDbCleanerTest {
     @Test
     @DisplayName("Checking successful run: All commands executed and waiting for 10 seconds.")
     void cleanOnStart_Success() throws InterruptedException{
-        // Mocking the Redis call
-        when(redisTemplate.getConnectionFactory()).thenReturn(connectionFactory);
-        when(connectionFactory.getConnection()).thenReturn(connection);
+        // GIVEN Mocking the Redis call
+        given(redisTemplate.getConnectionFactory()).willReturn(connectionFactory);
+        given(connectionFactory.getConnection()).willReturn(connection);
 
-        // Run
+        // WHEN Run
         cleaner.cleanOnStart();
 
-        // Checking flushAll
-        verify(connection, times(1)).flushAll();
-        verify(jdbcTemplate).execute(contains("TRUNCATE"));
-        verify(sleeper).sleep(5000);
-
-        // Checking SQL Truncate
-        verify(jdbcTemplate, times(1))
+        // THEN Checking flushAll
+        then(connection).should(times(1)).flushAll();
+        then(jdbcTemplate).should().execute(contains("TRUNCATE"));
+        then(sleeper).should().sleep(5000);
+        then(jdbcTemplate).should(times(1))
                 .execute("TRUNCATE TABLE transactions RESTART IDENTITY CASCADE");
     }
 
@@ -63,8 +62,8 @@ public class RedisAndDbCleanerTest {
     @DisplayName("InterruptedException test: checking the catch")
     void cleanOnStart_HandlesInterrupt() throws Exception { // Because of the checked exception should be handled
         // GIVEN: Sleeper throws exception
-        doThrow(new InterruptedException())
-                .when(sleeper).sleep(anyLong());
+        willThrow(new InterruptedException())
+                .given(sleeper).sleep(anyLong());
 
         // WHEN
         cleaner.cleanOnStart();

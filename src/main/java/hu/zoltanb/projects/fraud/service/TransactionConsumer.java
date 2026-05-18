@@ -28,7 +28,7 @@ public class TransactionConsumer {
     @KafkaListener(
             topics = "${app.kafka.topic}",
             //Auto-cleanup for Kafka
-            groupId = "fraud-group-#{T(java.util.UUID).randomUUID().toString()}",
+            groupId = "${app.kafka.consumer-group}-#{T(java.util.UUID).randomUUID().toString().substring(0,5)}",
             concurrency = "3")
     public void consume(Transaction message,
                         ConsumerRecordMetadata metadata) {

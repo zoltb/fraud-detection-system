@@ -42,7 +42,7 @@ public class RedisAndDbCleaner {
         }
 
     }
-    @Component // For recognition of the Spring and for unit test
+    // Simple POJO
     public static class Sleeper {
         public void sleep(long millis) throws InterruptedException {
             Thread.sleep(millis);

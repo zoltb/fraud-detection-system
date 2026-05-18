@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +40,7 @@ public class TransactionConsumerTest {
     @Test
     @DisplayName("Check transaction process and the save transaction")
     void consume_ShouldProcessAndSaveTransaction() {
-        // Create data
+        // GIVEN
         Transaction message = new Transaction();
         message.setTransactionId(999L);
         message.setAmount(BigDecimal.valueOf(34.5));
@@ -46,28 +48,27 @@ public class TransactionConsumerTest {
         message.setCreatedAt(LocalDateTime.now());
 
         FraudCheckResult mockResult = new FraudCheckResult(false, null);
-        when(fraudDetectionService.check(message)).thenReturn(mockResult);
+        given(fraudDetectionService.check(message)).willReturn(mockResult);
 
-        // Call
+        // WHEN
         transactionConsumer.consume(message,metadata);
 
-        // Assert check of the fraudDetectionService
-        verify(fraudDetectionService).check(message);
-
-        // Checking the save process into TransactionEntity
-        verify(repository).save(any(TransactionEntity.class));
+        // THEN Assert check of the fraudDetectionService
+        then(fraudDetectionService).should().check(message);
+        then(repository).should().save(any(TransactionEntity.class));
     }
 
     @Test
     @DisplayName("Check the save in case of fraud detected")
     void consume_WhenFraudDetected_ShouldSave() {
+        // GIVEN
         Transaction message = new Transaction();
         FraudCheckResult fraudCheckResult = new FraudCheckResult(true, "VELOCITY");
 
-        when(fraudDetectionService.check(message)).thenReturn(fraudCheckResult);
-
+        given(fraudDetectionService.check(message)).willReturn(fraudCheckResult);
+        // WHEN
         transactionConsumer.consume(message, metadata);
-
-        verify(repository).save(argThat(TransactionEntity::isFraud));
+        // THEN
+        then(repository).should().save(argThat(TransactionEntity::isFraud));
     }
 }

@@ -1,4 +1,6 @@
 package hu.zoltanb.projects.fraud.controller;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,13 +33,13 @@ class TransactionMockControllerTest {
         // MockMvc in standalone mode
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
-        when(config.getGenerator()).thenReturn(generator);
-        when(generator.getMinUserId()).thenReturn(1L);
-        when(generator.getMaxUserId()).thenReturn(10L);
-        when(generator.getMinMerchantId()).thenReturn(1L);
-        when(generator.getMaxMerchantId()).thenReturn(10L);
-        when(generator.getMinAmount()).thenReturn(100.0);
-        when(generator.getMaxAmount()).thenReturn(200.0);
+        given(config.getGenerator()).willReturn(generator);
+        given(generator.getMinUserId()).willReturn(1L);
+        given(generator.getMaxUserId()).willReturn(10L);
+        given(generator.getMinMerchantId()).willReturn(1L);
+        given(generator.getMaxMerchantId()).willReturn(10L);
+        given(generator.getMinAmount()).willReturn(100.0);
+        given(generator.getMaxAmount()).willReturn(200.0);
     }
     @Test
     @DisplayName("Should return transaction within the ranges")
@@ -49,8 +51,8 @@ class TransactionMockControllerTest {
                 .andExpect(jsonPath("$.merchantId", allOf(greaterThanOrEqualTo(1), lessThanOrEqualTo(10))))
                 .andExpect(jsonPath("$.amount", allOf(greaterThanOrEqualTo(100.0), lessThanOrEqualTo(200.0))));
 
-        // Check the generator and config calls
-        verify(config).getGenerator();
-        verify(generator, atLeastOnce()).getMinUserId();
+        // THEN Check the generator and config calls
+        then(config).should().getGenerator();
+        then(generator).should(atLeastOnce()).getMinUserId();
     }
 }
