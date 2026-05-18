@@ -47,40 +47,11 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-
-  opensearch:
-    image: opensearchproject/opensearch:2.11.0
-    container_name: fraud-opensearch
-    environment:
-      - cluster.name=fraud-cluster
-      - node.name=fraud-node1
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
-      - DISABLE_INSTALL_DEMO_CONFIG=true # Kikapcsolja a demo SSL-t a könnyebb lokális fejlesztésért
-      - DISABLE_SECURITY_PLUGIN=true     # Lokálisan HTTP-n fogunk kommunikálni HTTPS helyett
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
+  grafana:
+    image: grafana/grafana:latest
+    container_name: fraud-grafana
     ports:
-      - "9200:9200"
-    volumes:
-      - opensearch-data:/usr/share/opensearch/data
-
-  opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:2.11.0
-    container_name: fraud-dashboards
-    ports:
-       - "5601:5601"
+      - '3000:3000'
     environment:
-       - OPENSEARCH_HOSTS=["http://opensearch:9200"]
-       - DISABLE_SECURITY_PLUGIN=true
-    depends_on:
-      - opensearch
-
-volumes:
-  opensearch-data: {}
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
