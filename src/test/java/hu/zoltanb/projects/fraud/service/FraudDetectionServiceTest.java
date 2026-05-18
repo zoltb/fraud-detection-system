@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 
@@ -145,7 +146,7 @@ public class FraudDetectionServiceTest {
     @DisplayName("Should not call expire if counter is not 1")
     void check_ShouldNotExpireIfCounterIsTwo() {
         // GIVEN
-        given(valueOperations.increment(startsWith("card_test:"))).willReturn(1L);
+        given(valueOperations.increment(startsWith("card_test:"))).willReturn(2L);
         given(valueOperations.increment(startsWith("velocity:"))).willReturn(null);
 
         // WHEN
@@ -153,9 +154,10 @@ public class FraudDetectionServiceTest {
 
         // THEN
         // we didn't call expire because we didn't receive 1
-        verify(stringRedisTemplate, never()).expire(startsWith("card_test:"), any(Duration.class));
-        verify(stringRedisTemplate, never()).expire(startsWith("velocity:"), any(Duration.class));
+        then(stringRedisTemplate).should(never()).expire(startsWith("card_test:"), any(Duration.class));
+        then(stringRedisTemplate).should(never()).expire(startsWith("velocity:"), any(Duration.class));
     }
+    
     @Test
     @DisplayName("Should skip card testing if amount is above limit")
     void check_ShouldSkipCardTesting_WhenAmountIsLarge() {
