@@ -39,9 +39,6 @@ public class TransactionFlowIT {
     @Value("${app.kafka.consumer-group:fraud-detection-test-group}")
     private String baseConsumerGroup;
 
-    @MockBean
-    private org.opensearch.client.opensearch.OpenSearchClient openSearchClient;
-
     @Test
     void testTransactionReachesKafkaTopic() throws InterruptedException {
         String uniqueSuffix = "-" + UUID.randomUUID().toString().substring(0, 5);

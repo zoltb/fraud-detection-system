@@ -1,6 +1,4 @@
 app:
-  opensearch:
-    uris: http://localhost:9200
   kafka:
     topic: transactions
     consumer-group: "fraud-group"
