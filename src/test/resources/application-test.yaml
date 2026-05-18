@@ -21,6 +21,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   kafka:
+    admin:
+      auto-create: false
     bootstrap-servers: localhost:39092
     consumer-group: fraud-detection-group
     topic: transactions

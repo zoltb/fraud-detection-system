@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
@@ -37,6 +38,9 @@ public class TransactionFlowIT {
 
     @Value("${app.kafka.consumer-group:fraud-detection-test-group}")
     private String baseConsumerGroup;
+
+    @MockBean
+    private org.opensearch.client.opensearch.OpenSearchClient openSearchClient;
 
     @Test
     void testTransactionReachesKafkaTopic() throws InterruptedException {

@@ -19,7 +19,13 @@ public class RedisAndDbCleaner {
 
     private final StringRedisTemplate redisTemplate;
     private final JdbcTemplate jdbcTemplate;
-    private final Sleeper sleeper; // Spring will use it as a @Bean
+
+    private Sleeper sleeper = new Sleeper(); // Skip using Spring injection
+
+    // Now I can mock it in test
+    public void setSleeper(Sleeper sleeper) {
+        this.sleeper = sleeper;
+    }
 
     // Instead of @PostConstruct because ApplicationReadyEvent: it will run when app started to run
     @EventListener(ApplicationReadyEvent.class)

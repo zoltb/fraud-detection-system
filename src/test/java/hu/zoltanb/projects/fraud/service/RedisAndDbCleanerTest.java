@@ -38,6 +38,8 @@ public class RedisAndDbCleanerTest {
         // Lenient because some test will be shorter and won't run everything.
         lenient().when(redisTemplate.getConnectionFactory()).thenReturn(connectionFactory);
         lenient().when(connectionFactory.getConnection()).thenReturn(connection);
+        // set sleeper by hand
+        cleaner.setSleeper(sleeper);
     }
 
     @Test

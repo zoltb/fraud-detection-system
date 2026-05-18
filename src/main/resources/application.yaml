@@ -1,6 +1,9 @@
 app:
+  opensearch:
+    uris: http://localhost:9200
   kafka:
     topic: transactions
+    consumer-group: "fraud-group"
     partitions: 3 # just for fun
     scheduling:
       enabled: true
@@ -53,7 +56,7 @@ spring:
 
   # 4. Kafka setup
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:29092
 
     listener:
       # 10000ms = After 10 sec sends Idle event
