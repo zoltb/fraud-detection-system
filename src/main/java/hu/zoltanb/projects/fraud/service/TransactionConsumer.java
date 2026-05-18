@@ -26,7 +26,7 @@ public class TransactionConsumer {
 
     // Using getUserId to have data in the same partition
     @KafkaListener(
-            topics = "transactions",
+            topics = "${app.kafka.topic}",
             //Auto-cleanup for Kafka
             groupId = "fraud-group-#{T(java.util.UUID).randomUUID().toString()}",
             concurrency = "3")

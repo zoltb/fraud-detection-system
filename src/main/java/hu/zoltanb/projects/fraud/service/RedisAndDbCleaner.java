@@ -4,6 +4,8 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.retry.backoff.Sleeper;
@@ -17,10 +19,10 @@ public class RedisAndDbCleaner {
 
     private final StringRedisTemplate redisTemplate;
     private final JdbcTemplate jdbcTemplate;
-    private final Sleeper sleeper;
+    private final Sleeper sleeper; // Spring will use it as a @Bean
 
-
-    @PostConstruct
+    // Instead of @PostConstruct because ApplicationReadyEvent: it will run when app started to run
+    @EventListener(ApplicationReadyEvent.class)
     public void cleanOnStart() {
         redisTemplate.getConnectionFactory().getConnection().flushAll();
         log.info("Redis cache is empty!");
