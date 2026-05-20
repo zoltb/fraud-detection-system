@@ -34,7 +34,7 @@ public class FraudDetectionService {
 
             if (cCount != null && cCount > det.getCardTest().getCountLimit()) {
                 // Instead of return we add it to list
-                fraudTypes.add("CARD TESTING");
+                fraudTypes.add("CARD_TESTING");
             }
         }
 
