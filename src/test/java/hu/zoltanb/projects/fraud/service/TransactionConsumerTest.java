@@ -15,6 +15,7 @@ import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -65,7 +66,7 @@ public class TransactionConsumerTest {
     void consume_WhenFraudDetected_ShouldSave() {
         // GIVEN
         Transaction message = new Transaction();
-        FraudCheckResult fraudCheckResult = new FraudCheckResult(true, "VELOCITY");
+        FraudCheckResult fraudCheckResult = new FraudCheckResult(true, List.of("VELOCITY"));
 
         given(fraudDetectionService.check(message)).willReturn(fraudCheckResult);
         // WHEN

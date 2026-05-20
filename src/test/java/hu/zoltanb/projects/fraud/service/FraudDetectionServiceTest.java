@@ -76,7 +76,8 @@ public class FraudDetectionServiceTest {
 
         // THEN
         assertFalse(result.isFraud());
-        assertNull(result.fraudType());
+        assertTrue(result.fraudTypes().isEmpty());
+
     }
 
     @Test
@@ -92,7 +93,7 @@ public class FraudDetectionServiceTest {
 
         // THEN
         assertTrue(result.isFraud());
-        assertEquals("CARD_TESTING", result.fraudType());
+        assertTrue(result.fraudTypes().contains("CARD_TESTING"));
     }
 
     @Test
@@ -108,7 +109,7 @@ public class FraudDetectionServiceTest {
 
         // THEN
         assertTrue(result.isFraud());
-        assertEquals("VELOCITY", result.fraudType());
+        assertTrue(result.fraudTypes().contains("VELOCITY"));
     }
 
     @Test
