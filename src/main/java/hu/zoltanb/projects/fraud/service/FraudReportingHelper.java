@@ -36,12 +36,12 @@ public class FraudReportingHelper {
 
     // When every time we stop the whole process to hae result -> @PreDestroy
     public void LogFinalStatistics() {
-        // Egyszerű lekérdezés: lekérjük a felhasználót és a hozzá tartozó JSONB listát
+        // Getting the user and the related JSONB list
         String sql = """
            SELECT
                CASE
                    WHEN fraud_labels IS NULL OR fraud_labels = '' THEN 'CLEAN TRANSACTIONS'
-                   ELSE '[' || fraud_labels || ']'
+                   ELSE fraud_labels
                END as fraud_combination,
                COUNT(DISTINCT user_id) as total_users
            FROM (
@@ -59,7 +59,7 @@ public class FraudReportingHelper {
         log.info("------------------------------------------------");
         log.info("AGGREGATED USER FRAUD REPORT");
         log.info("------------------------------------------------");
-// Mivel az SQL már teljesen kész statisztikát ad, az ObjectMapperre sincs szükség itt!
+
         jdbcTemplate.query(sql, (rs, rowNum) -> {
             String combination = rs.getString("fraud_combination");
             int users = rs.getInt("total_users");

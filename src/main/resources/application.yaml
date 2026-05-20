@@ -85,7 +85,7 @@ fraud:
     transaction-count: 1000
     initial-delay: 3000
     min-user-id: 100
-    max-user-id: 500
+    max-user-id: 1000
     min-merchant-id: 100
     max-merchant-id: 110
     min-amount: 50

@@ -22,10 +22,9 @@ public class FraudDetectionService {
     public FraudCheckResult check(Transaction tx) {
         var det = config.getDetection();
 
-        // 1. Létrehozunk egy lokális listát a csalástípusoknak
         List<String> fraudTypes = new ArrayList<>();
 
-        // Card testing vizsgálat
+        // Card testing
         if (tx.getAmount().compareTo(det.getCardTest().getAmountLimit()) < 0) {
             String cKey = "card_test:" + tx.getUserId();
             Long cCount = redisTemplate.opsForValue().increment(cKey);
@@ -34,12 +33,12 @@ public class FraudDetectionService {
             }
 
             if (cCount != null && cCount > det.getCardTest().getCountLimit()) {
-                // Return helyett CSAK HOZZÁADJUK a listához
-                fraudTypes.add("CARD_TESTING");
+                // Instead of return we add it to list
+                fraudTypes.add("CARD TESTING");
             }
         }
 
-        // Velocity test vizsgálat (mindig lefut, nem ugorja át a kód!)
+        // Velocity test runs everytime
         String vKey = "velocity:" + tx.getUserId();
         Long vCount = redisTemplate.opsForValue().increment(vKey);
         if (vCount != null && vCount == 1) {
@@ -47,14 +46,12 @@ public class FraudDetectionService {
         }
 
         if (vCount != null && vCount > det.getVelocity().getCountLimit()) {
-            // Itt is CSAK HOZZÁADJUK a listához
+            // Adding to list
             fraudTypes.add("VELOCITY");
         }
 
-        // 2. A metódus legvégén döntünk: ha a lista nem üres, akkor isFraud = true
         boolean isFraud = !fraudTypes.isEmpty();
 
-        // Visszaadjuk az eredményt: ha nem csalás, üres listát adunk vissza (vody null-t, de a lista szebb)
         return new FraudCheckResult(isFraud, fraudTypes);
     }
 }
