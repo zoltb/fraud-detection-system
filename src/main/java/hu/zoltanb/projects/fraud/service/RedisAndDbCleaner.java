@@ -48,7 +48,7 @@ public class RedisAndDbCleaner {
         }
 
     }
-    // Simple POJO
+    @Component
     public static class Sleeper {
         public void sleep(long millis) throws InterruptedException {
             Thread.sleep(millis);

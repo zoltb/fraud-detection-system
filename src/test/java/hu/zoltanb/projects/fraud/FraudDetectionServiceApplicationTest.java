@@ -12,25 +12,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(properties = {
-        // Beágyazott H2 teszt adatbázis kényszerítése
-        "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL",
-        "spring.datasource.driver-class-name=org.h2.Driver",
-        "spring.datasource.username=sa",
-        "spring.datasource.password=",
-        "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
-
-        // Kikapcsoljuk a Hibernate automatikus tábla-ellenőrzését/generálását a teszt kontextus indulásakor,
-        // ez garantáltan átugorja a kritikus "getAutoCommit()" hibapontot.
-        "spring.jpa.hibernate.ddl-auto=none",
-
-        // Szintén kikapcsoljuk a Liquibase/Flyway-t a teszt erejéig, ha jelen lennének
-        "spring.liquibase.enabled=false",
-        "spring.flyway.enabled=false",
-
-        // Külső rendszerek portjainak elterelése
-        "spring.kafka.bootstrap-servers=localhost:9092"
-})
+@SpringBootTest()
 @ActiveProfiles("test")
 @EnableAutoConfiguration(exclude = {
         org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration.class
@@ -53,8 +35,6 @@ class FraudDetectionServiceApplicationTest {
      * "smoke test" of the application configuration.
      */
 
-    @MockBean
-    private javax.sql.DataSource dataSource;
     @MockBean
     private org.opensearch.client.opensearch.OpenSearchClient openSearchClient;
     @MockBean

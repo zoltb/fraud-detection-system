@@ -1,6 +1,7 @@
 package hu.zoltanb.projects.fraud;
 
 import hu.zoltanb.projects.fraud.config.FraudAppConfig;
+import hu.zoltanb.projects.fraud.service.RedisAndDbCleaner;
 import hu.zoltanb.projects.fraud.transactiongenerator.TransactionGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,11 @@ public class FraudDetectionServiceApplication {
     @Bean
     public RestClient restClient() {
         return RestClient.create();
+    }
+
+    @Bean
+    public RedisAndDbCleaner.Sleeper sleeper() {
+        return new RedisAndDbCleaner.Sleeper();
     }
 
     public static void main(String[] args) {
