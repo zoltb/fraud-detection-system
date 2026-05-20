@@ -75,14 +75,14 @@ spring:
 fraud:
   detection:
     card-test:
-      amount-limit: 1000
+      amount-limit: 4000
       count-limit: 4
       duration-minutes: 2
     velocity:
       count-limit: 10
-      duration-minutes: 1
+      duration-minutes: 2
   generator:
-    transaction-count: 1000
+    transaction-count: 10000
     initial-delay: 3000
     min-user-id: 100
     max-user-id: 1000
