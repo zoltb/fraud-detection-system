@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "transactions")
@@ -26,6 +27,7 @@ public class TransactionEntity {
     private LocalDateTime createdAt;
 
     private boolean fraud;
-    private String fraudType;
+    //private String fraudType;
+    List<String> fraudTypes;
     private Integer partition;
 }

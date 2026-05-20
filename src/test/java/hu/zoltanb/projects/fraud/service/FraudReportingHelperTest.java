@@ -1,5 +1,6 @@
 package hu.zoltanb.projects.fraud.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,8 +32,8 @@ public class FraudReportingHelperTest {
     static class Config {
         // Just for limiting the Spring context
         @Bean
-        public FraudReportingHelper fraudReportingHelper(JdbcTemplate jdbcTemplate) {
-            return new FraudReportingHelper(jdbcTemplate);
+        public FraudReportingHelper fraudReportingHelper(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
+            return new FraudReportingHelper(jdbcTemplate, objectMapper);
         }
     }
 

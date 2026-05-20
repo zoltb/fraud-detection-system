@@ -43,7 +43,7 @@ public class TransactionConsumer {
                 .transactionId(message.getTransactionId()).userId(message.getUserId())
                 .amount(message.getAmount()).merchantId(message.getMerchantId())
                 .createdAt(message.getCreatedAt()).fraud(result.isFraud())
-                .fraudType(result.fraudType()).partition(partitionId).build();
+                .fraudTypes(result.fraudTypes()).partition(partitionId).build();
 
         // save into PostgreSQL
         repository.save(entity);
