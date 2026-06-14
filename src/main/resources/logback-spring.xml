@@ -6,7 +6,7 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
     </root>
-
+    <springProfile name="!test">
     <appender name="REPORT_FILE" class="ch.qos.logback.core.FileAppender">
         <file>report.log</file>
         <append>false</append> <encoder>
@@ -17,4 +17,5 @@
     <logger name="REPORT" level="INFO" additivity="false">
         <appender-ref ref="REPORT_FILE" />
     </logger>
+    </springProfile>
 </configuration>

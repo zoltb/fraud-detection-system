@@ -31,7 +31,7 @@ public class TransactionConsumer {
     @KafkaListener(
             topics = "${app.kafka.topic}",
             //Auto-cleanup for Kafka
-            groupId = "${app.kafka.consumer-group}-#{T(java.util.UUID).randomUUID().toString().substring(0,5)}",
+            groupId = "${app.kafka.consumer-group}",
             concurrency = "3")
     public void consume(List<ConsumerRecord<String, Transaction>> records, Acknowledgment acknowledgment) {
 
