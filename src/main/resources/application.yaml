@@ -34,7 +34,7 @@ spring:
   datasource:
     hikari:
       maximum-pool-size: 50
-    url: jdbc:postgresql://localhost:5432/fraud_db
+    url: jdbc:postgresql://localhost:5432/fraud_db?reWriteBatchedInserts=true
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
@@ -72,6 +72,8 @@ spring:
     consumer:
       consumer-group: fraud-detection-group
       auto-offset-reset: earliest
+      fetch-min-bytes: 1024
+      fetch-max-wait: 500ms
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:

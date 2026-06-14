@@ -47,8 +47,8 @@ public class FraudDetectionServiceApplication {
             generator.generateData(count);
 
             System.out.println("All transactions are sent to Kafka!");
-            System.out.println("Waiting 15 seconds for Data...");
-            Thread.sleep(15000);
+            System.out.println("Waiting 5 seconds for Data...");
+            Thread.sleep(5000);
             System.out.println("Shutting down...");
 
             SpringApplication.exit(context, () -> 0);

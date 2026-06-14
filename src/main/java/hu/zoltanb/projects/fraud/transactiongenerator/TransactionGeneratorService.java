@@ -58,7 +58,7 @@ public class TransactionGeneratorService {
             } catch (Exception e) {
                 System.err.println("Error during API call: " + e.getMessage());
             }
-            Thread.sleep(gen.getSleepMs());
+            //Thread.sleep(gen.getSleepMs());
         }
         long duration = System.currentTimeMillis() - startTime;
         statsLog.info("=================================================================");
