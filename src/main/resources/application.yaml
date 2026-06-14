@@ -39,7 +39,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      jdbc.batch_size: 500
+      order_inserts: true
+      order_updates: true
+      ddl-auto: create
     show-sql: false
     properties:
       hibernate:
@@ -58,8 +61,8 @@ spring:
 
     listener:
       # 10000ms = After 10 sec sends Idle event
-      idle-event-interval: 10000
-
+      type: batch
+      ack-mode: manual
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -85,7 +88,7 @@ fraud:
     transaction-count: 1000
     initial-delay: 3000
     min-user-id: 100
-    max-user-id: 1000
+    max-user-id: 200
     min-merchant-id: 100
     max-merchant-id: 110
     min-amount: 50

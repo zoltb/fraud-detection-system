@@ -17,7 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 public class TransactionEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_id_seq")
+    @SequenceGenerator(
+            name = "transaction_id_seq",
+            sequenceName = "transaction_entity_seq",
+            allocationSize = 50 // Megmondja a Hibernate-nek, hogy egyszerre 50 ID-t foglaljon le a memóriában
+    )
     private Long id;
 
     private Long transactionId;

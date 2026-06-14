@@ -16,7 +16,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Component
 public class FraudReportingHelper {
     private final JdbcTemplate jdbcTemplate;
-    ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
+
+    private static final org.slf4j.Logger statsLog = org.slf4j.LoggerFactory.getLogger("REPORT");
+
 
     public FraudReportingHelper(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -36,38 +39,43 @@ public class FraudReportingHelper {
 
     // When every time we stop the whole process to hae result -> @PreDestroy
     public void LogFinalStatistics() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        statsLog.info("------------------------------------------------");
+        statsLog.info("AGGREGATED USER FRAUD REPORT");
+        statsLog.info("------------------------------------------------");
+
         // Getting the user and the related JSONB list
         String sql = """
-           SELECT
-               CASE
-                   WHEN fraud_labels IS NULL OR fraud_labels = '' THEN 'CLEAN TRANSACTIONS'
-                   ELSE fraud_labels
-               END as fraud_combination,
-               COUNT(DISTINCT user_id) as total_users
-           FROM (
-               SELECT
-                    user_id,
-                    array_to_string(array_agg(DISTINCT fraud_item ORDER BY fraud_item), ', ') as fraud_labels
-               FROM transactions
-               LEFT JOIN LATERAL unnest(fraud_types) as fraud_item ON true
-               GROUP BY user_id
-           ) user_summary
-           GROUP BY fraud_combination
-           ORDER BY total_users DESC
-        """;
-
-        log.info("------------------------------------------------");
-        log.info("AGGREGATED USER FRAUD REPORT");
-        log.info("------------------------------------------------");
-
+                       SELECT
+                           CASE
+                               WHEN fraud_labels IS NULL OR fraud_labels = '' THEN 'CLEAN TRANSACTIONS'
+                               ELSE fraud_labels
+                           END as fraud_combination,
+                           COUNT(DISTINCT user_id) as total_users
+                       FROM (
+                           SELECT
+                                user_id,
+                                array_to_string(array_agg(DISTINCT fraud_item ORDER BY fraud_item), ', ') as fraud_labels
+                           FROM transactions
+                           LEFT JOIN LATERAL unnest(fraud_types) as fraud_item ON true
+                           GROUP BY user_id
+                       ) user_summary
+                       GROUP BY fraud_combination
+                       ORDER BY total_users DESC
+                    """;
         jdbcTemplate.query(sql, (rs, rowNum) -> {
             String combination = rs.getString("fraud_combination");
             int users = rs.getInt("total_users");
 
-            log.info("{}: {} user(s)", combination, users);
+
+            statsLog.info("{}: {} user(s)", combination, users);
             return null;
         });
+        statsLog.info("==================================================");
 
-        log.info("------------------------------------------------");
     }
-    }
+}

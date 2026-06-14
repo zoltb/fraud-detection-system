@@ -21,6 +21,7 @@ public class TransactionGeneratorService {
     private final FraudAppConfig config;
     //Transaction ID need to be incremental and unique
     private final AtomicLong txIdCounter = new AtomicLong(1);
+    private static final org.slf4j.Logger statsLog = org.slf4j.LoggerFactory.getLogger("REPORT");
 
     public TransactionGeneratorService(TransactionProducer producer,
                                        RestClient.Builder restClientBuilder,
@@ -60,6 +61,9 @@ public class TransactionGeneratorService {
             Thread.sleep(gen.getSleepMs());
         }
         long duration = System.currentTimeMillis() - startTime;
-        System.out.println("PRODUCER is ready, the: " + count + " messages were sent in " + duration + " ms.");
+        statsLog.info("=================================================================");
+        statsLog.info("PRODUCER is ready, the: {} messages were sent in {} ms.", count, duration);
+        statsLog.info("=================================================================");
+
     }
 }
