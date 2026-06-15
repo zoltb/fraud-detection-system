@@ -55,24 +55,24 @@ public class FraudReportingHelper {
                                WHEN fraud_labels IS NULL OR fraud_labels = '' THEN 'CLEAN TRANSACTIONS'
                                ELSE fraud_labels
                            END as fraud_combination,
-                           COUNT(DISTINCT user_id) as total_users
+                           COUNT(*) as total_tx
                        FROM (
                            SELECT
-                                user_id,
+                                id,
                                 array_to_string(array_agg(DISTINCT fraud_item ORDER BY fraud_item), ', ') as fraud_labels
                            FROM transactions
                            LEFT JOIN LATERAL unnest(fraud_types) as fraud_item ON true
-                           GROUP BY user_id
+                           GROUP BY id
                        ) user_summary
                        GROUP BY fraud_combination
-                       ORDER BY total_users DESC
+                       ORDER BY total_tx DESC
                     """;
         jdbcTemplate.query(sql, (rs, rowNum) -> {
             String combination = rs.getString("fraud_combination");
-            int users = rs.getInt("total_users");
+            int count = rs.getInt("total_tx");
 
 
-            statsLog.info("{}: {} user(s)", combination, users);
+            statsLog.info("{}: {} transactions", combination, count);
             return null;
         });
         statsLog.info("==================================================");

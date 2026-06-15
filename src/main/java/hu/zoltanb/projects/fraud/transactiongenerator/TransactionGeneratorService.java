@@ -65,11 +65,11 @@ public class TransactionGeneratorService {
             }
             //Thread.sleep(gen.getSleepMs());
         }
-        reportingHelper.LogFinalStatistics();
+
         long duration = System.currentTimeMillis() - startTime;
         statsLog.info("=================================================================");
         statsLog.info("PRODUCER is ready, the: {} messages were sent in {} ms.", count, duration);
         statsLog.info("=================================================================");
-
+        //reportingHelper.LogFinalStatistics();
     }
 }
