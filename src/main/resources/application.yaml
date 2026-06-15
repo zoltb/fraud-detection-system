@@ -65,6 +65,7 @@ spring:
       # 10000ms = After 10 sec sends Idle event
       type: batch
       ack-mode: manual
+      idle-event-interval: 5000ms
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -73,7 +74,7 @@ spring:
       consumer-group: fraud-detection-group
       auto-offset-reset: earliest
       fetch-min-bytes: 1024
-      fetch-max-wait: 500ms
+      fetch-max-wait: 1000ms
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:

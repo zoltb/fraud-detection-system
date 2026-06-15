@@ -2,6 +2,7 @@ package hu.zoltanb.projects.fraud.transactiongenerator;
 
 import hu.zoltanb.projects.fraud.config.FraudAppConfig;
 import hu.zoltanb.projects.fraud.model.Transaction;
+import hu.zoltanb.projects.fraud.service.FraudReportingHelper;
 import hu.zoltanb.projects.fraud.service.TransactionProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -22,13 +23,17 @@ public class TransactionGeneratorService {
     //Transaction ID need to be incremental and unique
     private final AtomicLong txIdCounter = new AtomicLong(1);
     private static final org.slf4j.Logger statsLog = org.slf4j.LoggerFactory.getLogger("REPORT");
+    private final FraudReportingHelper reportingHelper;
 
     public TransactionGeneratorService(TransactionProducer producer,
                                        RestClient.Builder restClientBuilder,
-                                       FraudAppConfig config) {
+                                       FraudAppConfig config,
+                                       FraudReportingHelper reportingHelper) {
+
         this.producer = producer;
         this.config = config;
         this.restClient = restClientBuilder.baseUrl("http://localhost:8080").build();
+        this.reportingHelper = reportingHelper;
     }
 
     public void generateData(int count) throws InterruptedException {
@@ -60,6 +65,7 @@ public class TransactionGeneratorService {
             }
             //Thread.sleep(gen.getSleepMs());
         }
+        reportingHelper.LogFinalStatistics();
         long duration = System.currentTimeMillis() - startTime;
         statsLog.info("=================================================================");
         statsLog.info("PRODUCER is ready, the: {} messages were sent in {} ms.", count, duration);
