@@ -13,14 +13,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
+import org.springframework.kafka.support.Acknowledgment;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -37,7 +37,7 @@ public class TransactionConsumerTest {
     private TransactionRepository repository;
 
     @Mock
-    private KafkaTemplate<String, Transaction> kafkaTemplate;
+    private Acknowledgment acknowledgment;
 
     @InjectMocks
     private TransactionConsumer transactionConsumer;
@@ -58,11 +58,11 @@ public class TransactionConsumerTest {
         given(fraudDetectionService.check(message)).willReturn(mockResult);
 
         // WHEN
-        transactionConsumer.consume(records,null);
+        transactionConsumer.consume(records,acknowledgment);
 
         // THEN Assert check of the fraudDetectionService
         then(fraudDetectionService).should().check(message);
-        then(repository).should().save(any(TransactionEntity.class));
+        then(repository).should().saveAll(anyIterable());
     }
 
     @Test
@@ -82,8 +82,10 @@ public class TransactionConsumerTest {
 
         given(fraudDetectionService.check(message)).willReturn(fraudCheckResult);
         // WHEN
-        transactionConsumer.consume(records, null);
+        transactionConsumer.consume(records, acknowledgment);
         // THEN
-        then(repository).should().save(argThat(TransactionEntity::isFraud));
+        then(fraudDetectionService).should().check(message);
+        then(repository).should().saveAll(argThat(list -> ((List<TransactionEntity>)list).get(0).isFraud()));
+        then(acknowledgment).should().acknowledge();
     }
 }
