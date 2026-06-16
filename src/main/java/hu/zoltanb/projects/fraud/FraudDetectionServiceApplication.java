@@ -4,7 +4,6 @@ import hu.zoltanb.projects.fraud.config.FraudAppConfig;
 import hu.zoltanb.projects.fraud.service.RedisAndDbCleaner;
 import hu.zoltanb.projects.fraud.transactiongenerator.TransactionGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -47,7 +46,6 @@ public class FraudDetectionServiceApplication {
             generator.generateData(count);
 
             System.out.println("All transactions are sent to Kafka!");
-            System.out.println("Waiting 5 seconds for Data...");
             Thread.sleep(5000);
             System.out.println("Shutting down...");
 

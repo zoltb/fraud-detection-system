@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 

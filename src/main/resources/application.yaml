@@ -6,23 +6,22 @@ app:
     scheduling:
       enabled: true
 
-                ### TELJESÍTMÉNYMÉRÉSI EREDMÉNYEK (BENCHMARKS) ###
+                ### BENCHMARKS ###
       # -----------------------------------------------------------------------
-      # Adatmennyiség | Konfiguráció          | Idő (ms)   | Idő (perc/mp)
+      # Data | configuration          | Time (ms)   | Time (perc/mp)
       # -----------------------------------------------------------------------
-      # 10 000 rekord | 1 szál / 3 partíció   | 129 095 ms | ~2 perc 09 mp
-      # 10 000 rekord | 3 szál / 3 partíció   | 127 590 ms | ~2 perc 07 mp / 4400ms
-      # 10 000 rekord | 6 szál / 6 partíció   | 149 408 ms | ~2 perc 29 mp
+      # 10 000 record | 1 thread / 3 partitions   | 129 095 ms | ~2 min 09 mp
+      # 10 000 record | 3 thread / 3 partitions   | 127 590 ms | ~2 min 07 mp
+      # 10 000 record | 6 thread / 6 partitions   | 149 408 ms | ~2 min 29 mp
       # -----------------------------------------------------------------------
-      # 50 000 rekord | 1 szál / 3 partíció   | 675 994 ms | ~11 perc 15 mp
-      # 50 000 rekord | 3 szál / 3 partíció   | 654 510 ms | ~10 perc 54 mp / 15751ms
-      # 50 000 rekord | 6 szál / 6 partíció   | 663 876 ms | ~11 perc 03 mp
+      # 50 000 record | 1 thread / 3 partitions   | 675 994 ms | ~11 min 15 mp
+      # 50 000 record | 3 thread / 3 partitions   | 654 510 ms | ~10 min 54 mp
+      # 50 000 record | 6 thread / 6 partitions   | 663 876 ms | ~11 min 03 mp
       # -----------------------------------------------------------------------
-      # Megfigyelések:
-      # - 10k-nál a 6 szál lassabb (overhead), itt a 3 szál az optimális.
-      # - 50k-nál a 3 szál hozta a legjobb eredményt.
-      # - A localhost/DB szűk keresztmetszet miatt a szálak száma nem skálázódik lineárisan.
-
+      # Result:
+      # - Localhost and DB are the bottlenecks
+      # - Batch saving:
+      # 100 000 record | 3 thread / 3 partitions in 73 316 ms/ ~1min 13 mp!!!
 
 spring:
   # 1. Block Docker Compose Lifecycle Manager
@@ -91,12 +90,12 @@ fraud:
       count-limit: 10
       duration-minutes: 1
   generator:
-    transaction-count: 50000
+    transaction-count: 100000
     initial-delay: 3000
     min-user-id: 100
-    max-user-id: 151
+    max-user-id: 800
     min-merchant-id: 100
     max-merchant-id: 110
     min-amount: 50
-    max-amount: 8000
+    max-amount: 10000
     sleep-ms: 10

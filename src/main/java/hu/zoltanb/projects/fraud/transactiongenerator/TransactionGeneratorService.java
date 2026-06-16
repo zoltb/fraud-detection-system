@@ -2,7 +2,6 @@ package hu.zoltanb.projects.fraud.transactiongenerator;
 
 import hu.zoltanb.projects.fraud.config.FraudAppConfig;
 import hu.zoltanb.projects.fraud.model.Transaction;
-import hu.zoltanb.projects.fraud.service.FraudReportingHelper;
 import hu.zoltanb.projects.fraud.service.TransactionProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,17 +22,15 @@ public class TransactionGeneratorService {
     //Transaction ID need to be incremental and unique
     private final AtomicLong txIdCounter = new AtomicLong(1);
     private static final org.slf4j.Logger statsLog = org.slf4j.LoggerFactory.getLogger("REPORT");
-    private final FraudReportingHelper reportingHelper;
+
 
     public TransactionGeneratorService(TransactionProducer producer,
                                        RestClient.Builder restClientBuilder,
-                                       FraudAppConfig config,
-                                       FraudReportingHelper reportingHelper) {
+                                       FraudAppConfig config) {
 
         this.producer = producer;
         this.config = config;
         this.restClient = restClientBuilder.baseUrl("http://localhost:8080").build();
-        this.reportingHelper = reportingHelper;
     }
 
     public void generateData(int count) throws InterruptedException {

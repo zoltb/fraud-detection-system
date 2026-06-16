@@ -1,6 +1,5 @@
 package hu.zoltanb.projects.fraud.service;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -48,6 +47,7 @@ public class RedisAndDbCleaner {
         }
 
     }
+
     @Component
     public static class Sleeper {
         public void sleep(long millis) throws InterruptedException {

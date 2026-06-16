@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @Component
-//@ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)
 public class TransactionProducer {
 
     private final KafkaTemplate<String, Transaction> kafkaTemplate;
@@ -21,6 +20,6 @@ public class TransactionProducer {
 
     public void sendTestTransaction(Transaction transaction) {
         log.info("===> SENT: {}", transaction.getTransactionId());
-        kafkaTemplate.send("transactions", transaction.getUserId().toString(),transaction);
+        kafkaTemplate.send("transactions", transaction.getUserId().toString(), transaction);
     }
 }
