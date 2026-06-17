@@ -81,7 +81,7 @@ class TransactionGeneratorTest {
 
         // THEN - Get the data and capture it from the Service
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
-        then(producer).should().sendTestTransaction(captor.capture());
+        then(producer).should().sendTransaction(captor.capture());
 
         Transaction finalTx = captor.getValue();
 

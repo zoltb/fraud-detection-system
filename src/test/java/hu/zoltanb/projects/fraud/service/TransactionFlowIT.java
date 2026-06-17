@@ -58,7 +58,7 @@ public class TransactionFlowIT {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        producer.sendTestTransaction(testTx);
+        producer.sendTransaction(testTx);
         // Reading data from Kafka
         final ConsumerRecords<String, Transaction>[] recordsHolder = new ConsumerRecords[1];
 

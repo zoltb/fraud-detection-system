@@ -69,7 +69,7 @@ public class TransactionGeneratorServiceTest {
             service.generateData(5);
 
             // THEN
-            verify(producer, times(5)).sendTestTransaction(any());
+            verify(producer, times(5)).sendTransaction(any());
         }
 
         @Test
@@ -84,7 +84,7 @@ public class TransactionGeneratorServiceTest {
             service.generateData(2);
 
             // THEN
-            verify(producer, times(2)).sendTestTransaction(captor.capture());
+            verify(producer, times(2)).sendTransaction(captor.capture());
             List<Transaction> sentTxs = captor.getAllValues();
 
             assertThat(sentTxs.get(0).getTransactionId()).isEqualTo(1L);
@@ -106,7 +106,7 @@ public class TransactionGeneratorServiceTest {
                 service.generateData(1);
 
                 // THEN
-                verify(producer, never()).sendTestTransaction(any());
+                verify(producer, never()).sendTransaction(any());
             }
 
             @Test
@@ -123,7 +123,7 @@ public class TransactionGeneratorServiceTest {
 
                 // THEN
                 // Producer will be noticed only in case of successful loop.
-                verify(producer, times(1)).sendTestTransaction(any());
+                verify(producer, times(1)).sendTransaction(any());
             }
 
             @Test

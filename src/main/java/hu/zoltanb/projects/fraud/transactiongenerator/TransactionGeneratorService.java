@@ -55,7 +55,7 @@ public class TransactionGeneratorService {
                             .build();
 
                     // sending to Kafka
-                    producer.sendTestTransaction(finalTx);
+                    producer.sendTransaction(finalTx);
                 }
             } catch (Exception e) {
                 System.err.println("Error during API call: " + e.getMessage());

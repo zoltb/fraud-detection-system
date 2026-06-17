@@ -31,7 +31,7 @@ public class TransactionProducerTest {
         transaction.setUserId(123L);
 
         // WHEN
-        transactionProducer.sendTestTransaction(transaction);
+        transactionProducer.sendTransaction(transaction);
 
 
         // THEN: kafkaTemplate.send was called with the "transactions" topic
