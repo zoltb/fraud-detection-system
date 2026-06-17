@@ -5,6 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
 @ConfigurationProperties(prefix = "fraud")
 @Data
@@ -15,6 +18,7 @@ public class FraudAppConfig {
 
     @Data
     public static class Detection {
+        private List<String> detectors = new ArrayList<>();
         private CardTest cardTest = new CardTest();
         private Velocity velocity = new Velocity();
 
