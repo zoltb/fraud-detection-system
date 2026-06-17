@@ -88,30 +88,6 @@ class FraudReportingHelperTest {
                 .extracting(ILoggingEvent::getFormattedMessage)
                 .contains("CARD_TESTING, VELOCITY: 5 transactions");
     }
-
-    @Test
-    @DisplayName("Kafka Idle Event test: starting report generation")
-    void handleIdleEvent_TriggersStatisticsGeneration() throws SQLException {
-        // GIVEN - Simulate empty Kafka
-        ListenerContainerIdleEvent mockEvent = mock(ListenerContainerIdleEvent.class);
-        ResultSet mockResultSet = mock(ResultSet.class);
-        given(mockResultSet.getString("fraud_combination")).willReturn("CARD_TESTING");
-        given(mockResultSet.getInt("total_tx")).willReturn(50);
-
-        given(jdbcTemplate.query(anyString(), any(RowMapper.class))).willAnswer(invocation -> {
-            RowMapper<?> rowMapper = invocation.getArgument(1);
-            rowMapper.mapRow(mockResultSet, 1);
-            return null;
-        });
-        // WHEN - Send it to the method in Helper
-        fraudReportingHelper.handleIdleEvent(mockEvent);
-
-        // THEN - Checking
-        assertThat(listAppender.list)
-                .extracting(ILoggingEvent::getFormattedMessage)
-                .contains("No messages received for 10 seconds. Generating summary...");
-        verify(jdbcTemplate, times(1)).query(anyString(), any(RowMapper.class));
-    }
 }
 
 

@@ -1,6 +1,7 @@
 package hu.zoltanb.projects.fraud.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,10 +25,9 @@ public class FraudReportingHelper {
 
     private final AtomicBoolean reportGenerated = new AtomicBoolean(false);
 
-    @EventListener
-    public void handleIdleEvent(ListenerContainerIdleEvent event) {
+    @PreDestroy
+    public void onShutdown(){
         if (reportGenerated.compareAndSet(false, true)) {
-            log.info("No messages received for 10 seconds. Generating summary...");
             LogFinalStatistics();
         }
     }
@@ -45,23 +45,23 @@ public class FraudReportingHelper {
 
         // Getting the user and the related JSONB list
         String sql = """
-                   SELECT
-                       CASE
-                           WHEN fraud_labels IS NULL OR fraud_labels = '' THEN 'CLEAN TRANSACTIONS'
-                           ELSE fraud_labels
-                       END as fraud_combination,
-                       COUNT(*) as total_tx
-                   FROM (
                        SELECT
-                            id,
-                            array_to_string(array_agg(DISTINCT fraud_item ORDER BY fraud_item), ', ') as fraud_labels
-                       FROM transactions
-                       LEFT JOIN LATERAL unnest(fraud_types) as fraud_item ON true
-                       GROUP BY id
-                   ) user_summary
-                   GROUP BY fraud_combination
-                   ORDER BY total_tx DESC
-                """;
+                           CASE
+                               WHEN fraud_labels IS NULL OR fraud_labels = '' THEN 'CLEAN TRANSACTIONS'
+                               ELSE fraud_labels
+                           END as fraud_combination,
+                           COUNT(*) as total_tx
+                       FROM (
+                           SELECT
+                                id,
+                                array_to_string(array_agg(DISTINCT fraud_item ORDER BY fraud_item), ', ') as fraud_labels
+                           FROM transactions
+                           LEFT JOIN LATERAL unnest(fraud_types) as fraud_item ON true
+                           GROUP BY id
+                       ) user_summary
+                       GROUP BY fraud_combination
+                       ORDER BY total_tx DESC
+                    """;
         jdbcTemplate.query(sql, (rs, rowNum) -> {
             String combination = rs.getString("fraud_combination");
             int count = rs.getInt("total_tx");
