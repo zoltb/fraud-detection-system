@@ -20,8 +20,10 @@ app:
       # -----------------------------------------------------------------------
       # Result:
       # - Localhost and DB are the bottlenecks
-      # - Batch saving:
-      # 100 000 record | 3 thread / 3 partitions in 73 316 ms/ ~1min 13 mp!!!
+      # Record number = row number in DB!!!
+      # - After using batch saving:
+      # 100 000 record | 3 thread / 3 partitions in 73 316 ms/ ~1 min 13 mp!!!
+      # 1 000 000 record | 3 thread / 3 partitions in 646 923 ms/ ~10 min 47 mp!!!
 
 spring:
   # 1. Block Docker Compose Lifecycle Manager
@@ -83,11 +85,11 @@ spring:
 fraud:
   detection:
     card-test:
-      amount-limit: 1000
+      amount-limit: 500
       count-limit: 4
       duration-minutes: 2
     velocity:
-      count-limit: 10
+      count-limit: 20
       duration-minutes: 1
   generator:
     transaction-count: 100000
@@ -99,3 +101,9 @@ fraud:
     min-amount: 50
     max-amount: 10000
     sleep-ms: 10
+
+
+
+
+
+
