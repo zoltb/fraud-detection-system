@@ -92,7 +92,7 @@ fraud:
       count-limit: 20
       duration-minutes: 1
   generator:
-    transaction-count: 100000
+    transaction-count: 10000
     initial-delay: 3000
     min-user-id: 100
     max-user-id: 800
