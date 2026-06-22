@@ -36,8 +36,6 @@ class FraudDetectionServiceApplicationTest {
      */
 
     @MockBean
-    private org.opensearch.client.opensearch.OpenSearchClient openSearchClient;
-    @MockBean
     private StringRedisTemplate stringRedisTemplate;
     @MockBean
     private TransactionProducer transactionProducer;
