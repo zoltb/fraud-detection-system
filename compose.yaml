@@ -8,6 +8,7 @@ services:
       - DB_HOST=fraud-postgres
       - REDIS_HOST=fraud-redis
       - KAFKA_HOST=fraud-kafka
+      - KAFKA_PORT=9092
     depends_on:
       postgres:
         condition: service_healthy
