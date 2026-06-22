@@ -1,7 +1,12 @@
 services:
-
-
-
+  fraud-detection-system:
+    build: .
+    ports:
+      - 8000:8000
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - ./report.log:/app/report.log
   postgres:
     image: postgres:15
     container_name: fraud-postgres
@@ -28,15 +33,14 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
 
-      # Regisztráljuk a belső (9092), a kontroller (9093) és a külső (29092) csatornákat
+      # inner (9092), the controller (9093) and outer (29092) registration
       KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:29092
 
-      # Összekötjük őket a biztonsági protokollal
+      # binding with the security protocol
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
 
-      # FONTOS JAVÍTÁS 🎯:
-      # - A 9092-es porton a Docker belső hálózatát hirdeti (fraud-kafka:9092)
-      # - A 29092-es porton pedig a te Mac-edet hirdeti (localhost:29092)
+      # - port 9092 is the inner network of the Docker (fraud-kafka:9092)
+      # - port 29092 is the local address (localhost:29092)
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://fraud-kafka:9092,PLAINTEXT_HOST://localhost:29092
 
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
@@ -55,3 +59,5 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
