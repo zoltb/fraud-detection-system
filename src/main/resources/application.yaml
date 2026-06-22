@@ -35,7 +35,7 @@ spring:
   datasource:
     hikari:
       maximum-pool-size: 50
-    url: jdbc:postgresql://localhost:5432/fraud_db?reWriteBatchedInserts=true
+    url: 'jdbc:postgresql://${DB_HOST:localhost}:5432/fraud_db?reWriteBatchedInserts=true'
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
@@ -55,12 +55,12 @@ spring:
   # 3. Redis setup
   data:
     redis:
-      host: localhost
+      host: ${REDIS_HOST:localhost}
       port: 6379
 
   # 4. Kafka setup
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: ${KAFKA_HOST:localhost}:29092
 
     listener:
       # 10000ms = After 10 sec sends Idle event
@@ -92,7 +92,7 @@ fraud:
       count-limit: 20
       duration-minutes: 1
   generator:
-    transaction-count: 10000
+    transaction-count: 1000
     initial-delay: 3000
     min-user-id: 100
     max-user-id: 800
