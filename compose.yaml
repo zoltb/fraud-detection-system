@@ -50,32 +50,17 @@ services:
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
-
       # inner (9092), the controller (9093) and outer (29092) registration
       KAFKA_LISTENERS: 'PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:29092'
-
       # binding with the security protocol
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
-
       # - port 9092 is the inner network of the Docker (fraud-kafka:9092)
       # - port 29092 is the local address (localhost:29092)
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://fraud-kafka:9092,PLAINTEXT_HOST://localhost:29092'
-
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@fraud-kafka:9093'
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-  grafana:
-    image: 'grafana/grafana:latest'
-    container_name: fraud-grafana
-    ports:
-      - '3000:3000'
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - './grafana/provisioning:/etc/grafana/provisioning'
