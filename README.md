@@ -91,8 +91,8 @@ cd fraud-detection-system
 ````     
 docker compose up -d --build
 ````
-     Note: Once the application is running, it will generate a report.log file in the root directory
-     (default transaction count: 100,000).
+Note: Once the application is running, it will generate a report.log file in the root directory
+(default transaction count: 100,000).
 2/b) Build and launch tests using Docker Compose:
 - Prerequisites: build and launch the test environment and run the test suite
 - Check running containers and stop the run:
