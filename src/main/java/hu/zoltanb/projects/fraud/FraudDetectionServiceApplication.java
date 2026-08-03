@@ -38,7 +38,7 @@ public class FraudDetectionServiceApplication {
     @Profile("!test") // it runs only if it is not a test
     public CommandLineRunner testKafka(TransactionGeneratorService generator, ApplicationContext context) {
         return args -> {
-            //waiting 3 sec to Kafka Consumer be ready
+
             long delay = config.getGenerator().getInitialDelay();
             int count = config.getGenerator().getTransactionCount();
             Thread.sleep(delay);

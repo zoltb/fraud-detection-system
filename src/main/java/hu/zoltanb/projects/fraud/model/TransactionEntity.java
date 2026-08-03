@@ -21,7 +21,7 @@ public class TransactionEntity {
     @SequenceGenerator(
             name = "transaction_id_seq",
             sequenceName = "transaction_entity_seq",
-            allocationSize = 50 // Megmondja a Hibernate-nek, hogy egyszerre 50 ID-t foglaljon le a memóriában
+            allocationSize = 50 //Hibernate handle 50 ID
     )
     private Long id;
 

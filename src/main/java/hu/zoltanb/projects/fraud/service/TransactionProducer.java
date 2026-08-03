@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@Component
 public class TransactionProducer {
 
     private final KafkaTemplate<String, Transaction> kafkaTemplate;

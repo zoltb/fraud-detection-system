@@ -118,3 +118,27 @@ docker compose -f compose-test.yaml up -d
 ````
 - It will generate a report.log file in the root directory
 - In application.yaml you can set (eg.: transaction count, amount-limit, count-limit)
+---
+## Performance & Benchmarks
+
+The system was benchmarked locally to measure throughput and identify potential bottlenecks (such as database I/O and local resource limits).
+
+### Benchmark Results
+
+| Records | Configuration | Time (ms) | Duration |
+| :--- | :--- | :--- | :--- |
+| 10,000 | 1 thread / 3 partitions | 129,095 ms | ~2 min 09 sec |
+| 10,000 | 3 thread / 3 partitions | 127,590 ms | ~2 min 07 sec |
+| 10,000 | 6 thread / 6 partitions | 149,408 ms | ~2 min 29 sec |
+| 50,000 | 1 thread / 3 partitions | 675,994 ms | ~11 min 15 sec |
+| 50,000 | 3 thread / 3 partitions | 654,510 ms | ~10 min 54 sec |
+| 50,000 | 6 thread / 6 partitions | 663,876 ms | ~11 min 03 sec |
+
+### Key Takeaways & Optimizations
+
+* **Bottlenecks:** Localhost execution and PostgreSQL write operations act as the primary bottlenecks.
+* **Impact of Batch Saving:** Implementing Hibernate batch insertions:
+`datasource.hikari.maximum-pool-size: 50`, `reWriteBatchedInserts=true`, `jpa.hibernate.jdbc.batch_size=500`
+* **Drastically improved performance:**
+    * **100,000 records** (3 threads / 3 partitions) completed in **73,316 ms (~1 min 13 sec).
+    * **1,000,000 records** (3 threads / 3 partitions) completed in **646,923 ms (~10 min 47 sec).

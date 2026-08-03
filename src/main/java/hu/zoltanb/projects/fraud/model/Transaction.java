@@ -32,7 +32,4 @@ public class Transaction {
 
     @JsonProperty("createdAt")
     private LocalDateTime createdAt;
-
-    @Column(columnDefinition = "text[]")
-    private List<String> fraudTypes;
 }

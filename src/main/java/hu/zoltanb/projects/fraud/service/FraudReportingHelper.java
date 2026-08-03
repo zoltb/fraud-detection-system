@@ -14,13 +14,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Component
 public class FraudReportingHelper {
     private final JdbcTemplate jdbcTemplate;
-    private final ObjectMapper objectMapper;
 
     private static final org.slf4j.Logger statsLog = org.slf4j.LoggerFactory.getLogger("REPORT");
 
-    public FraudReportingHelper(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
+    public FraudReportingHelper(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.objectMapper = objectMapper;
     }
 
     private final AtomicBoolean reportGenerated = new AtomicBoolean(false);
