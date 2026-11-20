@@ -28,11 +28,11 @@ spring:
     properties:
       hibernate:
         generate_statistics: false
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
         jdbc.batch_size: 500
         order_inserts: true
         order_updates: true
+    open-in-view: false
 
   # 3. Redis setup
   data:
