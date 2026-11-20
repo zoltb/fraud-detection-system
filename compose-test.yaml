@@ -1,3 +1,4 @@
+name: 'test-env'
 services:
   postgres:
     image: 'postgres:15'
