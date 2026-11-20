@@ -23,15 +23,16 @@ spring:
 
   jpa:
     hibernate:
-      jdbc.batch_size: 500
-      order_inserts: true
-      order_updates: true
       ddl-auto: create
     show-sql: false
     properties:
       hibernate:
+        generate_statistics: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: false
+        jdbc.batch_size: 500
+        order_inserts: true
+        order_updates: true
 
   # 3. Redis setup
   data:
