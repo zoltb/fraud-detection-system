@@ -21,7 +21,7 @@ public class TransactionEntity {
     @SequenceGenerator(
             name = "transaction_id_seq",
             sequenceName = "transaction_entity_seq",
-            allocationSize = 50 //Hibernate handle 50 ID
+            allocationSize = 50 // number of IDs Hibernate reserves per sequence call
     )
     private Long id;
 
@@ -31,8 +31,7 @@ public class TransactionEntity {
     private Long merchantId;
     private LocalDateTime createdAt;
     private boolean fraud;
-    //private String fraudType;
-    List<String> fraudTypes;
+    private List<String> fraudTypes;
     private Integer partition;
 
     @Override
