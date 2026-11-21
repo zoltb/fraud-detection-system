@@ -6,10 +6,10 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "transactions")
-@Data
 @Builder
 @Getter
 @Setter
@@ -30,9 +30,20 @@ public class TransactionEntity {
     private BigDecimal amount;
     private Long merchantId;
     private LocalDateTime createdAt;
-
     private boolean fraud;
     //private String fraudType;
     List<String> fraudTypes;
     private Integer partition;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TransactionEntity that)) return false;
+        return Objects.equals(getTransactionId(), that.getTransactionId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getTransactionId());
+    }
 }
