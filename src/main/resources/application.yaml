@@ -1,7 +1,6 @@
 app:
   kafka:
     topic: transactions
-    consumer-group: "fraud-group"
     partitions: 3 # just for fun
     scheduling:
       enabled: true
@@ -54,7 +53,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
     consumer:
-      consumer-group: fraud-detection-group
+      group-id: fraud-group
       auto-offset-reset: earliest
       fetch-min-bytes: 1024
       fetch-max-wait: 1000ms

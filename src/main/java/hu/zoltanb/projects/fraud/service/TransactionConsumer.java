@@ -28,8 +28,6 @@ public class TransactionConsumer {
     @Transactional
     @KafkaListener(
             topics = "${app.kafka.topic}",
-            //Auto-cleanup for Kafka
-            groupId = "${app.kafka.consumer-group}",
             concurrency = "3")
     public void consume(List<ConsumerRecord<String, Transaction>> records, Acknowledgment acknowledgment) {
 
