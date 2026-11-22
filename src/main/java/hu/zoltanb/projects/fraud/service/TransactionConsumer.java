@@ -36,12 +36,9 @@ public class TransactionConsumer {
         log.info("===> BATCH RECEIVED: {} records on THREAD: {}", records.size(), Thread.currentThread().getName());
         for (ConsumerRecord<String, Transaction> record : records) {
             Transaction message = record.value();
-            int partitionId = record.partition();
 
-            // Redis ellenőrzés
             FraudCheckResult result = fraudService.check(message);
 
-            // Entity létrehozása
             TransactionEntity entity = TransactionEntity.builder()
                     .transactionId(message.getTransactionId())
                     .userId(message.getUserId())
@@ -50,20 +47,17 @@ public class TransactionConsumer {
                     .createdAt(message.getCreatedAt())
                     .fraud(result.isFraud())
                     .fraudTypes(result.fraudTypes())
-                    .partition(partitionId)
+                    .partition(record.partition())
                     .build();
 
             entitiesToSave.add(entity);
         }
 
-        // Batch mentés a PostgreSQL-be
         repository.saveAll(entitiesToSave);
         log.info("Batch of {} transactions successfully saved.", entitiesToSave.size());
 
-        // Kézi nyugtázás (ACK): Ha a saveAll elszáll, ez nem fut le,
-        // így a Kafka újra ki fogja osztani az üzeneteket -> NINCS ADATVESZTÉS
+        // Manual ACK: if saveAll() fails, this line is not reached, so Kafka redelivers
+        // the batch (at-least-once: no data loss, but duplicates are possible).
         acknowledgment.acknowledge();
     }
 }
-
-
