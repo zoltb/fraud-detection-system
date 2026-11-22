@@ -33,7 +33,6 @@ public class TransactionConsumer {
 
         List<TransactionEntity> entitiesToSave = new ArrayList<>();
 
-        log.info("===> BATCH RECEIVED: {} records on THREAD: {}", records.size(), Thread.currentThread().getName());
         for (ConsumerRecord<String, Transaction> record : records) {
             Transaction message = record.value();
 
@@ -54,7 +53,7 @@ public class TransactionConsumer {
         }
 
         repository.saveAll(entitiesToSave);
-        log.info("Batch of {} transactions successfully saved.", entitiesToSave.size());
+        log.debug("Saved batch of {} transactions", entitiesToSave.size());
 
         // Manual ACK: if saveAll() fails, this line is not reached, so Kafka redelivers
         // the batch (at-least-once: no data loss, but duplicates are possible).
