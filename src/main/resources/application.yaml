@@ -80,8 +80,6 @@ fraud:
     max-amount: 10000
     sleep-ms: 10
 
-
-
-
-
-
+logging:
+  level:
+    hu.zoltanb.projects.fraud: INFO   # DEBUG: per-batch consumer logs
