@@ -1,9 +1,9 @@
 app:
+  scheduling:
+    enabled: true
   kafka:
     topic: transactions
     partitions: 3 # just for fun
-    scheduling:
-      enabled: true
 
 spring:
   # 1. Block Docker Compose Lifecycle Manager
