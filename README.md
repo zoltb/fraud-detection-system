@@ -133,7 +133,7 @@ dev environment.
 
 ```
 docker compose -f compose-test.yaml up -d
-./mvnw clean test          # Windows: mvnw.cmd clean test
+./mvnw clean test          # Windows with PowerShell: .\mvnw.cmd clean test
 docker compose -f compose-test.yaml down
 ```
 
