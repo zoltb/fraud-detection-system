@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.kafka.event.ListenerContainerIdleEvent;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -53,7 +52,7 @@ class FraudReportingHelperTest {
     @DisplayName("Checks the header logs and SQL execution")
     void logFinalStatistics_LogsHeadersAndExecutesQuery() {
         // WHEN
-        fraudReportingHelper.LogFinalStatistics();
+        fraudReportingHelper.logFinalStatistics();
 
         // THEN check the run of the query
         verify(jdbcTemplate, times(1)).query(anyString(), any(RowMapper.class));
@@ -81,7 +80,7 @@ class FraudReportingHelperTest {
         });
 
         // WHEN
-        fraudReportingHelper.LogFinalStatistics();
+        fraudReportingHelper.logFinalStatistics();
 
         // THEN Checking logs
         assertThat(listAppender.list)

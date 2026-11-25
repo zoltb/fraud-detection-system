@@ -23,12 +23,12 @@ public class FraudReportingHelper {
     @PreDestroy
     public void onShutdown(){
         if (reportGenerated.compareAndSet(false, true)) {
-            LogFinalStatistics();
+            logFinalStatistics();
         }
     }
 
     // When every time we stop the whole process to hae result -> @PreDestroy
-    public void LogFinalStatistics() {
+    public void logFinalStatistics() {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
