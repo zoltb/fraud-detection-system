@@ -9,8 +9,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 
+import java.util.concurrent.CompletableFuture;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +34,8 @@ public class TransactionProducerTest {
     @Test
     @DisplayName("Check Kafka gets the right topic from TransactionProducer")
     void TestTransaction_shouldSentToCorrectTopic() {
-        // GIVEN Add fields
+        // GIVEN
+        given(kafkaTemplate.send(any(), any(), any())).willReturn(new CompletableFuture<>());
         Transaction transaction = new Transaction();
         transaction.setTransactionId(1234L);
         transaction.setUserId(123L);

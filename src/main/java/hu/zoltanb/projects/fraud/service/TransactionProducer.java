@@ -20,7 +20,17 @@ public class TransactionProducer {
     }
 
     public void sendTransaction(Transaction transaction) {
-        log.debug("===> SENT: {}", transaction.getTransactionId());
-        kafkaTemplate.send(topic, transaction.getUserId().toString(), transaction);
+        kafkaTemplate.send(topic, transaction.getUserId().toString(), transaction)
+                .whenComplete((result, ex) -> {
+                    if (ex != null) {
+                        log.error("Transaction failed with ID: {}", transaction.getTransactionId(), ex);
+                    } else {
+                        log.debug("===> Transaction with transactionId: {} was sent to partition {} at offset: {}"
+                                , transaction.getTransactionId()
+                                , result.getRecordMetadata().partition()
+                                , result.getRecordMetadata().offset());
+                    }
+                });
     }
 }
+
